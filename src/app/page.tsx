@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { Transition } from '@headlessui/react'
+import Video from '@/components/video'
 import clsx from 'clsx'
 
 export default function Home() {
@@ -66,6 +67,7 @@ export default function Home() {
   return (
     <div className="h-screen relative">
       <Transition
+        as={Fragment}
         show={togle}
         enter="transition-all duration-500"
         enterFrom={clsx("scale-50 opacity-0",
@@ -86,12 +88,12 @@ export default function Home() {
           {
             ['translate-y-[1000px]']: !direction 
           }
-
         )}
       >
-        {imgs[A.current]}
+        <Video coverUrl='imgs/14.jpg' url='video/1.mp4'/>
       </Transition>
       <Transition
+        as={Fragment}
         show={!togle}
         enter="transition-all duration-500"
         enterFrom={clsx("scale-50 opacity-0",
@@ -112,10 +114,9 @@ export default function Home() {
           {
             ['translate-y-[1000px]']: !direction 
           }
-
         )}
       >
-        {imgs[B.current]}
+        <Video coverUrl='imgs/14.jpg' url='video/1.mp4'/>
       </Transition>
     </div>
   )
