@@ -1,71 +1,84 @@
 'use client'
 
-import { useState, useEffect, useRef, Fragment } from 'react'
+import { useState, useEffect, useRef, Fragment, useCallback } from 'react'
 import { Transition } from '@headlessui/react'
 import Video from '@/components/video'
+import { imgArray, videoArray } from '@/test/test'
+import { throttle } from '@/utils/fn'
 import clsx from 'clsx'
 
 export default function Home() {
-  const imgNames = [
-    '1.jpg',  '10.png', '11.png',
-    '12.jpg', '13.jpg', '14.jpg',
-    '15.png', '16.png', '17.png',
-    '18.jpg', '2.jpg',  '3.jpg',
-    '4.jpg',  '5.jpg',  '6.jpg',
-    '7.png',  '8.jpg',  '9.jpg'
-  ]
-
-  const imgs = imgNames.map(x => (
-    <img src={'imgs/' + x} alt="test img" className="absolute w-screen h-screen object-cover"/>
-  ))
-
   const [togle, setTogle] = useState(true)
+  const togleRef = useRef(togle)
   const [direction, setDirection] = useState(true)
   const cur = useRef(0)
   const A = useRef(0)
   const B = useRef(0)
 
-  useEffect(() => {
-    const change = () => {
-      setTogle(!togle)
-      if (!togle) {
-        A.current = cur.current
-      } else {
-        B.current = cur.current
-      }
+  const changeUp = useCallback(() => {
+    setDirection(false)
+    cur.current = (cur.current-1) == -1 ? imgArray.length-1 : cur.current-1
+    togleRef.current = !togleRef.current
+    setTogle(togleRef.current)
+    if (togleRef.current) {
+      A.current = cur.current
+    } else {
+      B.current = cur.current
+    }
+  }, [])
 
+  const changeDown = useCallback(() => {
+    setDirection(true)
+    cur.current = (cur.current+1) % imgArray.length
+    togleRef.current = !togleRef.current
+    setTogle(togleRef.current)
+    if (togleRef.current) {
+      A.current = cur.current
+    } else {
+      B.current = cur.current
     }
-    const handle = (e: WheelEvent) => {
-      if (e.deltaY > 0) {
-        setDirection(true)
-        cur.current = (cur.current+1) % imgs.length
-      } else {
-        setDirection(false)
-        cur.current = (cur.current-1) == -1 ? imgs.length-1 : cur.current-1
-      }
-      change()
+  }, [])
+
+  const handleWheel = useCallback( (e: WheelEvent) => {
+    if (e.deltaY > 0) {
+      changeDown()
+    } else {
+      changeUp()
     }
-    const handleClick = (e: PointerEvent) => {
-      if (e.clientY <= window.innerHeight/3) {
-        setDirection(false)
-        cur.current = (cur.current-1) == -1 ? imgs.length-1 : cur.current-1
-        change()
-      } else if (e.clientY >= window.innerHeight*2/3) {
-        setDirection(true)
-        cur.current = (cur.current+1) % imgs.length
-        change()
-      }
+  }, [])
+
+  const handleClick = useCallback((e: PointerEvent) => {
+    if (e.clientY <= window.innerHeight/5) {
+      changeUp()
+    } else if (e.clientY >= window.innerHeight*4/5) {
+      changeDown()
     }
-    document.addEventListener('wheel', handle)
-    document.addEventListener('pointerup', handleClick)
+  }, [])
+  
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'ArrowUp' ) {
+      changeUp()
+    } else if (e.key === 'ArrowDown') {
+      changeDown()
+    }
+  }, [])
+
+  useEffect(useCallback(() => {
+    const warpW = throttle(handleWheel, 600)
+    const warpC = throttle(handleClick, 600)
+    const warpK = throttle(handleKeyDown, 600)
+    document.addEventListener('wheel', warpW)
+    document.addEventListener('pointerup', warpC)
+    document.addEventListener('keydown', warpK)
     return () => {
-      document.removeEventListener('wheel', handle)
-      document.removeEventListener('pointerup', handleClick)
+      document.removeEventListener('wheel', warpW)
+      document.removeEventListener('pointerup', warpC)
+      document.removeEventListener('keydown', warpK)
     }
-  }, [togle])
+  }, []), [])
 
   return (
-    <div className="h-screen relative">
+    <div className="h-screen relative overflow-hidden">
       <Transition
         as={Fragment}
         show={togle}
@@ -90,7 +103,7 @@ export default function Home() {
           }
         )}
       >
-        <Video coverUrl='imgs/14.jpg' url='video/1.mp4'/>
+        <Video coverUrl={imgArray[A.current]} url={videoArray[A.current%videoArray.length]}/>
       </Transition>
       <Transition
         as={Fragment}
@@ -116,7 +129,7 @@ export default function Home() {
           }
         )}
       >
-        <Video coverUrl='imgs/14.jpg' url='video/1.mp4'/>
+        <Video coverUrl={imgArray[B.current]} url={videoArray[B.current%videoArray.length]}/>
       </Transition>
     </div>
   )

@@ -1,14 +1,27 @@
 import { Transition } from "@headlessui/react"
-import { forwardRef, useState, Fragment, useRef} from "react"
+import { forwardRef, useState, Fragment, useRef, useEffect} from "react"
 
 const Video = forwardRef<HTMLDivElement, {coverUrl: string, url: string}>(({coverUrl, url}, ref) => {
     const [open, setOpen] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
+
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setOpen(false)
+            }
+        }
+        document.addEventListener('keydown', handleEsc)
+        return () => {
+            document.removeEventListener('keydown', handleEsc)
+        }
+    }, [])
+
     return (
         <div ref={ref} className="absolute inset-0">
             <div className="flex justify-center items-center absolute inset-0 m-auto" >
-                <img src={coverUrl} alt="video cover" className=" object-contain"/>
-                <button className="absolute rounded-full shadow-md" onClick={() => setOpen(true)}>
+                <img src={coverUrl} alt="video cover" className="h-full object-contain"/>
+                <button className="absolute rounded-full shadow" onClick={() => setOpen(true)}>
                     <svg className="w-16 h-16 sm:w-20 sm:h-20 hover:opacity-75 transition duration-150 ease-in-out" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient x1="78.169%" y1="9.507%" x2="24.434%" y2="90.469%" id="a">
@@ -23,6 +36,16 @@ const Video = forwardRef<HTMLDivElement, {coverUrl: string, url: string}>(({cove
             </div>
             <Transition
                 show={open}
+                className="fixed inset-0 bg-background transition-opacity"
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition ease-out duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            />
+            <Transition
+                show={open}
                 as={Fragment}
                 enter="transition-opacity duration-500"
                 enterFrom="opacity-0"
@@ -32,7 +55,7 @@ const Video = forwardRef<HTMLDivElement, {coverUrl: string, url: string}>(({cove
                 leaveTo="opacity-0"           
                 afterEnter={() => videoRef.current?.play()}
             >
-                <video ref={videoRef} className="absolute inset-0 m-auto" loop controls>
+                <video ref={videoRef} className="absolute inset-0 m-auto h-full object-contain" loop controls>
                     <source src={url}/>
                     Your browser does not support the video tag.
                 </video>
