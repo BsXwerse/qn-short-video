@@ -10,6 +10,7 @@ import clsx from 'clsx'
 export default function Home() {
   const [togle, setTogle] = useState(true)
   const togleRef = useRef(togle)
+  const mainRef = useRef<HTMLDivElement>(null)
   const [direction, setDirection] = useState(true)
   const cur = useRef(0)
   const A = useRef(0)
@@ -67,18 +68,18 @@ export default function Home() {
     const warpW = throttle(handleWheel, 600)
     const warpC = throttle(handleClick, 600)
     const warpK = throttle(handleKeyDown, 600)
-    document.addEventListener('wheel', warpW)
-    document.addEventListener('pointerup', warpC)
+    mainRef.current?.addEventListener('pointerup', warpC)
+    mainRef.current?.addEventListener('wheel', warpW)
     document.addEventListener('keydown', warpK)
     return () => {
-      document.removeEventListener('wheel', warpW)
-      document.removeEventListener('pointerup', warpC)
+      mainRef.current?.removeEventListener('pointerup', warpC)
+      mainRef.current?.removeEventListener('wheel', warpW)
       document.removeEventListener('keydown', warpK)
     }
   }, []), [])
 
   return (
-    <div className="h-screen relative overflow-hidden">
+    <div className="h-screen relative overflow-hidden" ref={mainRef}>
       <Transition
         as={Fragment}
         show={togle}
