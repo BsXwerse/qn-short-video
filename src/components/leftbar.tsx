@@ -1,5 +1,4 @@
 import Link from "next/link"
-import {IconHeart, IconSettings, IconUpload, IconSearch, IconTestPipe2, IconUserPlus} from '@tabler/icons-react'
 
 export default function LeftBar() {
     const tags = [
