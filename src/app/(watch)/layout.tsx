@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Header from '@/components/header'
 import RightBar from '@/components/rightbar'
 import LeftBar from '@/components/leftbar'
+import Favorite from '@/components/favorite'
 
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
       <main className='mx-auto max-w-4xl w-full'>
         <Header/>
         {children}
+        <Favorite/>
       </main>
       <RightBar/>
     </div>
