@@ -1,3 +1,3 @@
 export default function test() {
-    return <h1 className=" text-foreground">test page</h1>
+  return <h1 className=" text-foreground">test page</h1>;
 }

@@ -3,17 +3,20 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --background: 0 0% 7%;
-        --foreground: 0 0% 98%;
-    }
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+  }
 }
 
 @layer base {
-    body {
-        @apply bg-background
-    }
-    ::-webkit-scrollbar {
-        width: 0;
-    }
+  body {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar {
+    width: 0;
+  }
 }

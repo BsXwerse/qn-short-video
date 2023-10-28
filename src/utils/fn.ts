@@ -1,7 +1,10 @@
 /*
 抑制函数执行频率
 */
-export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number,
+): T {
   let lastCallTime = 0;
 
   return function (...args: Parameters<T>): any {
