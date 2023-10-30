@@ -5,65 +5,12 @@ import { Combobox } from '@headlessui/react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { MouseEvent, useState, useEffect } from 'react'
 import { post } from '@/actions/request'
 import toast from 'react-hot-toast'
-
-//TODO
-const tags = [
-    'life',
-    'sports',
-    'pet',
-    'music',
-    'travel',
-    'food',
-    'comedy',
-    'technology',
-    'education',
-    'news',
-    'gaming',
-    'beauty',
-    'fitness',
-    'vlogs',
-    'documentary',
-    'fashion',
-    'health',
-    'DIY',
-    'entertainment',
-    'cars',
-    'science',
-    'art',
-    'history',
-    'business',
-    'cooking',
-    'gardening',
-    'crafts',
-    'celebrities',
-    'nature',
-    'photography',
-    'dance',
-    'magic',
-    'anime',
-    'reviews',
-    'trailer',
-    'reactions',
-    'interviews',
-    'reality',
-    'pranks',
-    'how-to',
-    'unboxing',
-    'product demos',
-    'home improvement',
-    'music videos',
-    'sustainability',
-    'parenting',
-    'finance',
-    'horror',
-    'romance',
-    'thriller',
-    'fantasy',
-    'scifi'
-]
+import {IconPlus} from '@tabler/icons-react'
+import { Tag } from '@prisma/client'
+import {get} from '@/actions/request'
 
 interface FormElements extends HTMLFormControlsCollection {
     title: HTMLInputElement
@@ -77,9 +24,22 @@ interface MyFormElement extends HTMLFormElement {
 export default function Upload() {
     const router = useRouter()
     const { data: session, status } = useSession()
-    const [tagValue, setTagValue] = useState(tags[0])
+    const [tagValue, setTagValue] = useState('')
+    const [addedTags, setAddedTags] = useState<string[]>([])
     const [cover, setCover] = useState<File>()
     const [video, setVideo] = useState<File>()
+    const [tags, setTags] = useState<Tag[]>([])
+
+    useEffect(() => {
+        const getData = async () => {
+            const res = await get<Tag[]>('/api/tag')
+            if (res.body) {
+                setTags(res.body)
+            }
+        }
+        getData()
+    }, [])
+
     if (status !== 'authenticated') {
         return (
             <div className="mx-auto w-screen h-screen inset-x-0 flex items-center justify-center text-foreground text-lg">
@@ -90,8 +50,9 @@ export default function Upload() {
         )
     }
 
-    const filterTags = tagValue === '' ? tags : tags.filter((x) => x.toLowerCase().includes(tagValue.toLowerCase()))
+    const filterTags = tagValue === '' ? tags : tags.filter((x) => x.name.toLowerCase().includes(tagValue.toLowerCase()))
 
+    //TODO
     const handleSubmit = async (e: React.FormEvent<MyFormElement>) => {
         e.preventDefault()
 
@@ -124,7 +85,7 @@ export default function Upload() {
     }
 
     return (
-        <div className="mx-auto max-w-2xl inset-x-0 flex items-center justify-center text-lg bg-background">
+        <div className="mx-auto max-w-2xl inset-x-0 flex items-center justify-center text-lg bg-background text-foreground">
             <form className="w-full py-10 px-8" onSubmit={handleSubmit}>
                 <div className="pb-12">
                     <h2 className="text-lg font-semibold leading-7 text-foreground">Upload</h2>
@@ -133,7 +94,7 @@ export default function Upload() {
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         {/* title */}
                         <div className="sm:col-span-4">
-                            <label htmlFor="title" className="block text-base font-medium leading-6 text-foreground">
+                            <label htmlFor="title" className="block text-lg font-medium leading-6 text-foreground">
                                 Title
                             </label>
                             <div className="mt-2">
@@ -151,7 +112,7 @@ export default function Upload() {
                         </div>
                         {/*introduction  */}
                         <div className="col-span-full">
-                            <label htmlFor="introduction" className="block text-base font-medium leading-6 text-foreground">
+                            <label htmlFor="introduction" className="block text-lg font-medium leading-6 text-foreground">
                                 Introduction
                             </label>
                             <div className="mt-2 text-foreground">
@@ -168,25 +129,51 @@ export default function Upload() {
                         </div>
                         {/* tag  */}
                         <div className="col-span-full">
-                            <label htmlFor="tag" className="block text-base font-medium leading-6 text-foreground">
-                                Tag
+                            <label htmlFor="tag" className="block text-lg font-medium leading-6 text-foreground">
+                                Tags
                             </label>
-                            <div className="mt-2">
+                            <div className="mt-2 space-x-2">
                                 <Combobox value={tagValue} onChange={setTagValue}>
                                     <Combobox.Input onChange={(e) => setTagValue(e.target.value)} className=" text-foreground bg-background ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 outline-none rounded-md py-1 px-2" />
                                     <Combobox.Options className="border-foreground/30 border-[1px] rounded-md text-foreground space-y-1 px-2 max-h-52 overflow-auto max-w-[200px] absolute bg-background my-4">
-                                        {filterTags.map((x, index) => (
-                                            <Combobox.Option key={index} value={x} className="hover:cursor-pointer hover:bg-foreground/20 rounded px-3 py-[2px]">
-                                                {x}
+                                        {filterTags.map(x => (
+                                            <Combobox.Option key={x.id} value={x.name} className="hover:cursor-pointer hover:bg-foreground/20 rounded px-3 py-[2px]">
+                                                {x.name}
                                             </Combobox.Option>
                                         ))}
                                     </Combobox.Options>
                                 </Combobox>
+                                <button onClick={
+                                        (e: MouseEvent) => {
+                                            e.preventDefault()
+                                            if (tagValue.length > 0)
+                                            setAddedTags([...new Set([...addedTags, tagValue])])
+                                        }
+                                    }
+                                    className='text-foreground align-middle'
+                                    >
+                                    <IconPlus />
+                                </button>
                             </div>
+                            <div className='flex gap-2 flex-wrap py-5 text-foreground border-[1px] border-muted-foreground rounded-lg my-5 px-5 min-w-[100px] min-h-[50px]'>
+                                {
+                                    addedTags.map(x => (
+                                        <span>{x}</span>
+                                    ))
+                                }
+                            </div>
+                            <button className=' font-semibold hover:text-foreground/50 text-sm'
+                            onClick={
+                                (e: MouseEvent) => {
+                                    e.preventDefault()
+                                    setAddedTags([])
+                                }
+                            }
+                            >Clear all tags</button>
                         </div>
                         {/* cover */}
                         <div className="col-span-full">
-                            <label htmlFor="cover-photo" className="block text-base font-medium leading-6 text-foreground">
+                            <label htmlFor="cover-photo" className="block text-lg font-medium leading-6 text-foreground">
                                 Video cover
                             </label>
                             <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-muted-foreground px-6 py-10">
@@ -214,7 +201,7 @@ export default function Upload() {
                         </div>
                         {/* video */}
                         <div className="col-span-full">
-                            <label htmlFor="photo" className="block text-base font-medium leading-6 text-foreground">
+                            <label htmlFor="photo" className="block text-lg font-medium leading-6 text-foreground">
                                 Video
                             </label>
                             <div className="mt-2 flex items-center gap-x-3">

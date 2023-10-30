@@ -2,9 +2,9 @@
 
 ### todo
 
-- login
-- upload
-- video title & introduction
+- login ✔
+- upload 
+- video title & introduction ✔
 - favorite
 - follow
 - dark & light mode

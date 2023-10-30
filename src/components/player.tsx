@@ -19,23 +19,42 @@ export default function Player({ tag }: { tag?: string }) {
     const [direction, setDirection] = useState(true)
     const [videoItems, setVideoItems] = useState<VideoItem[]>([])
     const videoRef = useRef<VideoItem[]>(videoItems)
+    const [isPlay, setIsPaly] = useState(false)
+    const isPlayRef = useRef(isPlay)
     const cur = useRef(0)
     const A = useRef(0)
     const B = useRef(0)
 
-    const changeUp = useCallback(() => {
-        //TODO
+    const changeUp = useCallback(async () => {
+        if (cur.current % PAGE_SIZE === 0) {
+            if (cur.current === 0) {
+                return
+            }
+            const params = new URLSearchParams()
+            params.append('pageNum', ''+ Math.floor((cur.current-1)/PAGE_SIZE))
+            params.append('pageSize', ''+PAGE_SIZE)
+            if (tag) params.append('tag', tag)
+            const data = await get<VideoItem[]>('/api/video', params)
+            if (data.body) {
+                if (data.body.length === 0) {
+                    return
+                }
+                setVideoItems(data.body)
+                videoRef.current = data.body
+            }
+        }
+        cur.current--
         setDirection(false)
-        cur.current = cur.current - 1 == -1 ? imgArray.length - 1 : cur.current - 1
         togleRef.current = !togleRef.current
         setTogle(togleRef.current)
         if (togleRef.current) {
-            A.current = cur.current
+            A.current = cur.current%PAGE_SIZE
         } else {
-            B.current = cur.current
+            B.current = cur.current%PAGE_SIZE
         }
     }, [])
-    const changeDown = useCallback(() => {
+
+    const changeDown = useCallback(async () => {
         if ((cur.current % PAGE_SIZE) + 1 === videoRef.current.length) {
             if (videoRef.current.length < PAGE_SIZE) {
                 return
@@ -44,17 +63,14 @@ export default function Player({ tag }: { tag?: string }) {
             params.append('pageNum', '' + (cur.current + 1) / PAGE_SIZE)
             params.append('pageSize', '' + PAGE_SIZE)
             if (tag) params.append('tag', tag)
-            const f = async () => {
-                const data = await get<VideoItem[]>('/api/video', params)
-                if (data.body) {
-                    if (data.body.length === 0) {
-                        return
-                    }
-                    setVideoItems(data.body)
-                    videoRef.current = data.body
+            const data = await get<VideoItem[]>('/api/video', params)
+            if (data.body) {
+                if (data.body.length === 0) {
+                    return
                 }
+                setVideoItems(data.body)
+                videoRef.current = data.body
             }
-            f()
         }
         cur.current++
         setDirection(true)
@@ -80,6 +96,9 @@ export default function Player({ tag }: { tag?: string }) {
             changeUp()
         } else if (e.clientY >= (window.innerHeight * 4) / 5) {
             changeDown()
+        } else {
+            isPlayRef.current = !isPlayRef.current
+            setIsPaly(isPlayRef.current)
         }
     }, [])
 
@@ -122,7 +141,7 @@ export default function Player({ tag }: { tag?: string }) {
 
     return (
         <div className="h-screen relative overflow-hidden" ref={mainRef}>
-            <Favorite />
+            <Favorite videoId={videoItems.length === 0 ? -1 : videoItems[cur.current%PAGE_SIZE].id}/>
             <Transition
                 as={Fragment}
                 show={togle}
@@ -149,7 +168,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[A.current]} url={videoArray[A.current % videoArray.length]} />
+                <Video coverUrl={imgArray[A.current]} url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay}/>
             </Transition>
             <Transition
                 as={Fragment}
@@ -177,7 +196,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[B.current]} url={videoArray[B.current % videoArray.length]} />
+                <Video coverUrl={imgArray[B.current]} url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay}/>
             </Transition>
         </div>
     )
