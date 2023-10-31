@@ -1,3 +1,25 @@
+import { faker } from '@faker-js/faker'
+import { videoDto } from '@/types/video'
+
+export function generateRandomVideoArray(count: number): videoDto[] {
+    const randomVideoArray: videoDto[] = []
+
+    for (let i = 0; i < count; i++) {
+        const randomVideo: videoDto = {
+            title: faker.lorem.words({ min: 1, max: 5 }),
+            introduction: faker.lorem.sentences({ min: 1, max: 5 }),
+            tag: faker.lorem.word({ length: { min: 3, max: 6 } }),
+            cover: faker.image.url(),
+            video: faker.internet.url(),
+            uploaderId: 'clo8oxlfz0000u0hkm6epkvwn'
+        }
+
+        randomVideoArray.push(randomVideo)
+    }
+
+    return randomVideoArray
+}
+
 export const imgArray = [
     'https://cdn.pixabay.com/photo/2023/10/13/14/39/book-8312948_1280.jpg',
     'https://cdn.pixabay.com/photo/2023/09/16/21/31/girl-8257551_1280.jpg',
@@ -40,5 +62,5 @@ export const videoArray = [
     'https://player.vimeo.com/external/554035638.sd.mp4?s=a0b2cfb574a127bca9c4e04252e9ab4fe4960793&profile_id=164&oauth2_token_id=57447761',
     'https://player.vimeo.com/external/456104737.sd.mp4?s=11b1da5b9bb60af4c8cc5c15f3271cf7b9e8ce5d&profile_id=165&oauth2_token_id=57447761',
     'https://player.vimeo.com/external/494752269.sd.mp4?s=78705abb978278a4b058e6cb9aaf5644d5eb9b7f&profile_id=164&oauth2_token_id=57447761',
-    'https://player.vimeo.com/external/455802231.sd.mp4?s=e4f00b120fe379bf318b461010a05592879c9574&profile_id=165&oauth2_token_id=57447761',
+    'https://player.vimeo.com/external/455802231.sd.mp4?s=e4f00b120fe379bf318b461010a05592879c9574&profile_id=165&oauth2_token_id=57447761'
 ]
