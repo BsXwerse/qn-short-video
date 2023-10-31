@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation'
 import { MouseEvent, useState, useEffect } from 'react'
 import { post } from '@/actions/request'
 import toast from 'react-hot-toast'
-import {IconPlus} from '@tabler/icons-react'
+import { IconPlus } from '@tabler/icons-react'
 import { Tag } from '@prisma/client'
-import {get} from '@/actions/request'
+import { get } from '@/actions/request'
 
 interface FormElements extends HTMLFormControlsCollection {
     title: HTMLInputElement
@@ -52,14 +52,13 @@ export default function Upload() {
 
     const filterTags = tagValue === '' ? tags : tags.filter((x) => x.name.toLowerCase().includes(tagValue.toLowerCase()))
 
-    //TODO
     const handleSubmit = async (e: React.FormEvent<MyFormElement>) => {
         e.preventDefault()
 
         const dto: videoDto = {
             title: e.currentTarget.elements.title.value,
             introduction: e.currentTarget.elements.introduction.value,
-            tag: tagValue,
+            tags: addedTags,
             cover: 'test cover url',
             video: 'test video url',
             uploaderId: session.user.id
@@ -136,40 +135,37 @@ export default function Upload() {
                                 <Combobox value={tagValue} onChange={setTagValue}>
                                     <Combobox.Input onChange={(e) => setTagValue(e.target.value)} className=" text-foreground bg-background ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 outline-none rounded-md py-1 px-2" />
                                     <Combobox.Options className="border-foreground/30 border-[1px] rounded-md text-foreground space-y-1 px-2 max-h-52 overflow-auto max-w-[200px] absolute bg-background my-4">
-                                        {filterTags.map(x => (
+                                        {filterTags.map((x) => (
                                             <Combobox.Option key={x.id} value={x.name} className="hover:cursor-pointer hover:bg-foreground/20 rounded px-3 py-[2px]">
                                                 {x.name}
                                             </Combobox.Option>
                                         ))}
                                     </Combobox.Options>
                                 </Combobox>
-                                <button onClick={
-                                        (e: MouseEvent) => {
-                                            e.preventDefault()
-                                            if (tagValue.length > 0)
-                                            setAddedTags([...new Set([...addedTags, tagValue])])
-                                        }
-                                    }
-                                    className='text-foreground align-middle'
-                                    >
+                                <button
+                                    onClick={(e: MouseEvent) => {
+                                        e.preventDefault()
+                                        if (tagValue.length > 0) setAddedTags([...new Set([...addedTags, tagValue])])
+                                    }}
+                                    className="text-foreground align-middle"
+                                >
                                     <IconPlus />
                                 </button>
                             </div>
-                            <div className='flex gap-2 flex-wrap py-5 text-foreground border-[1px] border-muted-foreground rounded-lg my-5 px-5 min-w-[100px] min-h-[50px]'>
-                                {
-                                    addedTags.map(x => (
-                                        <span>{x}</span>
-                                    ))
-                                }
+                            <div className="flex gap-2 flex-wrap py-5 text-foreground border-[1px] border-muted-foreground rounded-lg my-5 px-5 min-w-[100px] min-h-[50px]">
+                                {addedTags.map((x) => (
+                                    <span>{x}</span>
+                                ))}
                             </div>
-                            <button className=' font-semibold hover:text-foreground/50 text-sm'
-                            onClick={
-                                (e: MouseEvent) => {
+                            <button
+                                className=" font-semibold hover:text-foreground/50 text-sm"
+                                onClick={(e: MouseEvent) => {
                                     e.preventDefault()
                                     setAddedTags([])
-                                }
-                            }
-                            >Clear all tags</button>
+                                }}
+                            >
+                                Clear all tags
+                            </button>
                         </div>
                         {/* cover */}
                         <div className="col-span-full">

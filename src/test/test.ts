@@ -1,23 +1,23 @@
-import { faker } from '@faker-js/faker';
-import { videoDto } from '@/types/video';
+import { faker } from '@faker-js/faker'
+import { videoDto } from '@/types/video'
 
 export function generateRandomVideoArray(count: number): videoDto[] {
-    const randomVideoArray: videoDto[] = [];
+    const randomVideoArray: videoDto[] = []
 
     for (let i = 0; i < count; i++) {
         const randomVideo: videoDto = {
-            title: faker.lorem.words({min:1, max:5}),
-            introduction: faker.lorem.sentences({min:1, max:5}),
-            tag: faker.lorem.word({length:{min:3, max:6}}),
+            title: faker.lorem.words({ min: 1, max: 5 }),
+            introduction: faker.lorem.sentences({ min: 1, max: 5 }),
+            tag: faker.lorem.word({ length: { min: 3, max: 6 } }),
             cover: faker.image.url(),
             video: faker.internet.url(),
-            uploaderId: 'clo8oxlfz0000u0hkm6epkvwn',
-        };
+            uploaderId: 'clo8oxlfz0000u0hkm6epkvwn'
+        }
 
-        randomVideoArray.push(randomVideo);
+        randomVideoArray.push(randomVideo)
     }
 
-    return randomVideoArray;
+    return randomVideoArray
 }
 
 export const imgArray = [

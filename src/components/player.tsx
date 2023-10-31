@@ -31,8 +31,8 @@ export default function Player({ tag }: { tag?: string }) {
                 return
             }
             const params = new URLSearchParams()
-            params.append('pageNum', ''+ Math.floor((cur.current-1)/PAGE_SIZE))
-            params.append('pageSize', ''+PAGE_SIZE)
+            params.append('pageNum', '' + Math.floor((cur.current - 1) / PAGE_SIZE))
+            params.append('pageSize', '' + PAGE_SIZE)
             if (tag) params.append('tag', tag)
             const data = await get<VideoItem[]>('/api/video', params)
             if (data.body) {
@@ -48,9 +48,9 @@ export default function Player({ tag }: { tag?: string }) {
         togleRef.current = !togleRef.current
         setTogle(togleRef.current)
         if (togleRef.current) {
-            A.current = cur.current%PAGE_SIZE
+            A.current = cur.current % PAGE_SIZE
         } else {
-            B.current = cur.current%PAGE_SIZE
+            B.current = cur.current % PAGE_SIZE
         }
     }, [])
 
@@ -92,10 +92,11 @@ export default function Player({ tag }: { tag?: string }) {
     }, [])
 
     const handleClick = useCallback((e: PointerEvent) => {
+        //TODO
         if (e.clientY <= window.innerHeight / 5) {
-            changeUp()
+            // changeUp()
         } else if (e.clientY >= (window.innerHeight * 4) / 5) {
-            changeDown()
+            // changeDown()
         } else {
             isPlayRef.current = !isPlayRef.current
             setIsPaly(isPlayRef.current)
@@ -141,7 +142,7 @@ export default function Player({ tag }: { tag?: string }) {
 
     return (
         <div className="h-screen relative overflow-hidden" ref={mainRef}>
-            <Favorite videoId={videoItems.length === 0 ? -1 : videoItems[cur.current%PAGE_SIZE].id}/>
+            <Favorite videoId={videoItems.length === 0 ? -1 : videoItems[cur.current % PAGE_SIZE].id} />
             <Transition
                 as={Fragment}
                 show={togle}
@@ -168,7 +169,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[A.current]} url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay}/>
+                <Video coverUrl={imgArray[A.current]} url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay} />
             </Transition>
             <Transition
                 as={Fragment}
@@ -196,7 +197,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[B.current]} url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay}/>
+                <Video coverUrl={imgArray[B.current]} url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay} />
             </Transition>
         </div>
     )

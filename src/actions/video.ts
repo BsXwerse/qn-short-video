@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
 import { videoDto } from '@/types/video'
 
-export async function save({ title, introduction, tag, cover, video, uploaderId }: videoDto) {
+export async function save({ title, introduction, tags, cover, video, uploaderId }: videoDto) {
     await prisma.video.create({
         data: {
             title,
@@ -9,14 +9,12 @@ export async function save({ title, introduction, tag, cover, video, uploaderId 
             url: video,
             coverUrl: cover,
             tags: {
-                connectOrCreate: {
-                    create: {
-                        name: tag
-                    },
-                    where: {
-                        name: tag
+                connectOrCreate: tags.map((x) => {
+                    return {
+                        where: { name: x },
+                        create: { name: x }
                     }
-                }
+                })
             },
             uploder: {
                 connect: {

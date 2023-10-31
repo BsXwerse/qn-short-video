@@ -3,7 +3,7 @@ import { Video } from '@prisma/client'
 export interface videoDto {
     title: string
     introduction: string
-    tag: string
+    tags: string[]
     cover: string
     video: string
     uploaderId: string
