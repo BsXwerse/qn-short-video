@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma'
+import { UserDto } from '@/test/test'
 
 export async function isFollowed(userId: string, uploaderId: string) {
     const count = await prisma.user.count({
@@ -44,3 +45,22 @@ export async function addOrCancel(userId: string, uploaderId: string) {
     }
     return await isFollowed(userId, uploaderId)
 }
+
+export async function getAll(id: string) {
+    const res = await prisma.user.findMany({
+        where: {
+            followedBy: {
+                some: {
+                    id: id
+                }
+            }
+        }
+    })
+    return res
+}
+
+// export async function addTestUsers(users: UserDto[]) {
+//     await prisma.user.createMany({
+//         data: users
+//     })
+// }

@@ -55,7 +55,7 @@ export default function RightBar() {
                     </div>
                 </Link>
                 <Link href="/upload">
-                    <div className="px-5 inline-flex gap-2  h-14 rounded-full items-center bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150">
+                    <div className="px-5 inline-flex gap-2  h-14 rounded-full items-center bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150 text-white">
                         <IconUpload />
                         <span>upload</span>
                     </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Fragment, useCallback } from 'react'
 import { Transition } from '@headlessui/react'
 import Video from '@/components/video'
-import { imgArray, videoArray } from '@/test/test'
+import { videoArray } from '@/test/test'
 import { throttle } from '@/utils/fn'
 import Favorite from '@/components/favorite'
 import clsx from 'clsx'
@@ -169,7 +169,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[A.current]} url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay} />
+                <Video url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay} />
             </Transition>
             <Transition
                 as={Fragment}
@@ -197,7 +197,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video coverUrl={imgArray[B.current]} url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay} />
+                <Video url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay} />
             </Transition>
         </div>
     )

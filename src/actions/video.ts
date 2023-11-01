@@ -42,3 +42,42 @@ export async function getByTag(pageNum: number, pageSize: number, tag?: string) 
     })
     return videos
 }
+
+export async function getFavorites(userId: string) {
+    const res = await prisma.video.findMany({
+        where: {
+            favoritedBy: {
+                some: {
+                    id: userId
+                }
+            }
+        },
+        include: {
+            uploder: {
+                select: {
+                    name: true,
+                    image: true
+                }
+            }
+        }
+    })
+    return res
+}
+
+export async function getById(id: number) {
+    const res = await prisma.video.findUnique({
+        where: {
+            id: id
+        }
+    })
+    return res
+}
+
+// export async function testGetAllId() {
+//     const res = await prisma.user.findMany({
+//         select: {
+//             id: true
+//         }
+//     })
+//     return res
+// }

@@ -2,9 +2,12 @@ import { VideoItem } from '@/types/video'
 import { Transition } from '@headlessui/react'
 import { forwardRef, useState, Fragment, useRef, useEffect, MouseEvent } from 'react'
 import VideoInfo from './video-info'
+import DefaultCover from '../../public/imgs/default.png'
+import Image from 'next/image'
 import clsx from 'clsx'
 
-const Video = forwardRef<HTMLDivElement, { coverUrl: string; url: string; item: VideoItem; isPlay: boolean }>(({ coverUrl, url, item, isPlay }, ref) => {
+const Video = forwardRef<HTMLDivElement, { url: string; item: VideoItem; isPlay: boolean }>(({ url, item, isPlay }, ref) => {
+    //TODO使用item url
     const [open, setOpen] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -30,7 +33,7 @@ const Video = forwardRef<HTMLDivElement, { coverUrl: string; url: string; item: 
         <div ref={ref} className="absolute inset-0">
             <VideoInfo item={item} isShow={!isPlay} />
             <div className="flex justify-center items-center absolute inset-0 m-auto">
-                <img src={coverUrl} alt="video cover" className="h-full object-contain" />
+                <Image src={item ? (item.coverUrl as string) : DefaultCover} alt="video cover" className="h-full object-contain" width={1000} height={1000} />
                 <button
                     className={clsx('absolute rounded-full shadow z-[110]', {
                         ['hidden']: open,
@@ -52,7 +55,7 @@ const Video = forwardRef<HTMLDivElement, { coverUrl: string; url: string; item: 
             </div>
             <Transition show={open} className="fixed inset-0 bg-background transition-opacity z-[80]" enter="transition ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100" leave="transition ease-out duration-100" leaveFrom="opacity-100" leaveTo="opacity-0" />
             <Transition show={open} as={Fragment} enter="transition-opacity duration-500" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-100" leaveFrom="opacity-100" leaveTo="opacity-0" afterEnter={() => videoRef.current?.play()}>
-                <video ref={videoRef} className="absolute inset-0 m-auto h-full z-[90]" loop controls>
+                <video ref={videoRef} className="absolute inset-0 m-auto h-full z-[90] rounded" loop controls>
                     <source src={url} />
                     Your browser does not support the video tag.
                 </video>

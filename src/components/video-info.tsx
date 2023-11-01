@@ -64,7 +64,7 @@ export default function VideoInfo({ item, isShow }: { item: VideoItem; isShow: b
                 />
 
                 <Transition.Child className="py-16 px-5 z-10" enter="transition ease-out duration-200" enterFrom="opacity-0 -translate-y-40" enterTo="opacity-100 translate-y-0" leave="transition ease-in duration-150" leaveFrom="opacity-100 translate-y-0" leaveTo="opacity-0 -translate-y-40">
-                    <p className="line-clamp-3">{item.introduction}</p>
+                    <p className="line-clamp-3 text-white">{item.introduction}</p>
                 </Transition.Child>
 
                 <Transition.Child
@@ -79,7 +79,7 @@ export default function VideoInfo({ item, isShow }: { item: VideoItem; isShow: b
                     <h2 className="font-semibold text-lg truncate max-lg:max-w-[250px] drop-shadow ">{item.title}</h2>
                     <div className="flex flex-col items-center gap-3 lg:flex-row-reverse">
                         <button
-                            className={clsx('rounded-full font-semibold p-1 text-[12px] shrink-0', {
+                            className={clsx('rounded-full font-semibold p-1 text-[12px] text-white shrink-0', {
                                 ['bg-indigo-600']: !isFollowed,
                                 ['bg-black/50']: isFollowed,
                                 ['px-2']: !isFollowed

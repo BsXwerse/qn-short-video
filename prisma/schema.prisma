@@ -11,17 +11,18 @@ datasource db {
 }
 
 model Video {
-  id           Int     @id @default(autoincrement())
-  uploder      User    @relation(name: "upload", fields: [uploderId], references: [id])
+  id           Int      @id @default(autoincrement())
+  uploder      User     @relation(name: "upload", fields: [uploderId], references: [id])
   uploderId    String
   title        String
   introduction String?
-  likes        Int     @default(0)
-  views        Int     @default(0)
+  likes        Int      @default(0)
+  views        Int      @default(0)
   url          String?
   coverUrl     String?
   tags         Tag[]
-  favoritedBy  User[]  @relation("favorites")
+  uploadTime   DateTime @default(now())
+  favoritedBy  User[]   @relation("favorites")
 }
 
 model Tag {

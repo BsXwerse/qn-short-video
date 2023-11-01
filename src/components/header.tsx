@@ -10,7 +10,7 @@ export default function Header() {
     return (
         <header className="h-12 fixed inset-x-0 mx-auto max-w-5xl flex items-center justify-between  bg-background/30 rounded backdrop-blur-[10px] shadow-md text-foreground z-[200] lg:hidden">
             <LoginBar showName={false} />
-            {pathname.length !== 3 ? 'hot' : pathname[2]}
+            <span className=" font-semibold">{pathname.length !== 3 ? 'hot' : pathname[2]}</span>
             <div className="flex items-center justify-center px-8 gap-5">
                 <MobileTag />
                 <MobileNav />
