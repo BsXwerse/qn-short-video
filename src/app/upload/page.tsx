@@ -11,6 +11,8 @@ import toast from 'react-hot-toast'
 import { IconPlus } from '@tabler/icons-react'
 import { Tag } from '@prisma/client'
 import { get } from '@/actions/request'
+import { uploadOSS } from '@/actions/oss-client'
+import { v4 as uuidv4 } from 'uuid'
 
 interface FormElements extends HTMLFormControlsCollection {
     title: HTMLInputElement
@@ -55,28 +57,50 @@ export default function Upload() {
     const handleSubmit = async (e: React.FormEvent<MyFormElement>) => {
         e.preventDefault()
 
+        //TODO 后缀名支持
+        if (!video || !cover) {
+            toast.error('Video and cover must be selected')
+            return
+        }
+        if (!video.name.endsWith('.mp4')) {
+            toast.error('Only supports MP4')
+            return
+        }
+
+        const v_uuid = uuidv4()
+        const c_uuid = uuidv4()
+        const v_key = 'video/' + v_uuid + '.mp4'
+        const c_key = 'cover/' + c_uuid + '.jpg'
+
         const dto: videoDto = {
             title: e.currentTarget.elements.title.value,
             introduction: e.currentTarget.elements.introduction.value,
             tags: addedTags,
-            cover: 'test cover url',
-            video: 'test video url',
+            cover: c_key,
+            video: v_key,
             uploaderId: session.user.id
         }
 
-        const promise = new Promise(async (resolve, reject) => {
-            const res = await post<null>('/api/video', dto)
+        const videoPromise = uploadOSS(video, v_key)
+        const coverPromise = uploadOSS(cover, c_key)
+
+        const dbPromise = new Promise(async (resolve, reject) => {
+            const res = await post<undefined>('/api/video', dto)
             if (res.code === 200) {
                 resolve('done')
             } else {
                 reject()
             }
         })
+        const promise = Promise.all([videoPromise, coverPromise, dbPromise])
+        //TODO 上传失败做清理工作
+
         toast.promise(promise, {
             loading: 'uploading...',
             success: 'upload successful',
             error: 'upload failed'
         })
+
         promise.then(
             (x) => router.push('/'),
             (x) => {}
@@ -153,8 +177,8 @@ export default function Upload() {
                                 </button>
                             </div>
                             <div className="flex gap-2 flex-wrap py-5 text-foreground border-[1px] border-muted-foreground rounded-lg my-5 px-5 min-w-[100px] min-h-[50px]">
-                                {addedTags.map((x) => (
-                                    <span>{x}</span>
+                                {addedTags.map((x, index) => (
+                                    <span key={index}>{x}</span>
                                 ))}
                             </div>
                             <button

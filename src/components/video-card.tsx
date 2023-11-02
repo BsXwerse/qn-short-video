@@ -5,7 +5,7 @@ import Link from 'next/link'
 export default function VideoCard({ item }: { item: VideoItem }) {
     return (
         <div className="text-foreground rounded-lg border-[1px] border-muted w-full hover:bg-muted transition-colors duration-300 lg:flex lg:h-60 shadow">
-            <Image src={item.coverUrl as string} width={300} height={300} alt="video cover" className="object-cover lg:rounded-l-lg max-lg:rounded-t-lg w-full h-52 lg:w-auto lg:h-auto " />
+            <Image src={item.coverUrl as string} width={500} height={500} alt="video cover" className="object-cover lg:rounded-l-lg max-lg:rounded-t-lg w-full h-52 lg:w-auto lg:h-auto lg:max-w-[300px] " />
             <div className="m-3 ml-5 flex flex-col justify-between gap-3">
                 <div className="space-y-2">
                     <Link href={'/favorites/play/' + item.id} scroll={false}>

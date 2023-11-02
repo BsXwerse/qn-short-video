@@ -9,7 +9,7 @@ export default async function Play({ params }: { params: { id: string } }) {
         <Modal>
             <div className="max-w-3xl max-h-[90vh] h-full">
                 <video className="h-full shadow rounded" controls loop>
-                    <source src={videoArray[3]} />
+                    <source src={video.url as string} />
                 </video>
             </div>
         </Modal>

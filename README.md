@@ -3,12 +3,13 @@
 ### todo
 
 - login ✔
-- upload 
+- upload ✔
 - video title & introduction ✔
-- favorite
-- follow
-- dark & light mode
+- favorite ✔
+- follow ✔
+- dark & light mode ✔
 - search
 
 TODO
 播放视频两边变没
+七牛云sdk warning

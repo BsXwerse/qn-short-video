@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { videoDto } from '@/types/video'
+import { getUrl } from './oss-server'
 
 export async function save({ title, introduction, tags, cover, video, uploaderId }: videoDto) {
     await prisma.video.create({
@@ -40,6 +41,10 @@ export async function getByTag(pageNum: number, pageSize: number, tag?: string) 
             }
         }
     })
+    videos.forEach((x) => {
+        x.coverUrl = getUrl(x.coverUrl ? x.coverUrl : 'imgs/default.png')
+        x.url = getUrl(x.url as string)
+    })
     return videos
 }
 
@@ -61,6 +66,10 @@ export async function getFavorites(userId: string) {
             }
         }
     })
+    res.forEach((x) => {
+        x.coverUrl = getUrl(x.coverUrl ? x.coverUrl : 'imgs/default.png')
+        x.url = getUrl(x.url as string)
+    })
     return res
 }
 
@@ -70,6 +79,9 @@ export async function getById(id: number) {
             id: id
         }
     })
+    if (!res) throw new Error('no video with id: ' + id)
+    res.coverUrl = getUrl(res.coverUrl ? res.coverUrl : 'imgs/default.png')
+    res.url = getUrl(res.url as string)
     return res
 }
 

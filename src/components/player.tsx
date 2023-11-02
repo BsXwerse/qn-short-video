@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, Fragment, useCallback } from 'react'
 import { Transition } from '@headlessui/react'
 import Video from '@/components/video'
-import { videoArray } from '@/test/test'
 import { throttle } from '@/utils/fn'
 import Favorite from '@/components/favorite'
 import clsx from 'clsx'
@@ -55,6 +54,7 @@ export default function Player({ tag }: { tag?: string }) {
     }, [])
 
     const changeDown = useCallback(async () => {
+        if (videoRef.current.length === 0) return
         if ((cur.current % PAGE_SIZE) + 1 === videoRef.current.length) {
             if (videoRef.current.length < PAGE_SIZE) {
                 return
@@ -92,7 +92,7 @@ export default function Player({ tag }: { tag?: string }) {
     }, [])
 
     const handleClick = useCallback((e: PointerEvent) => {
-        //TODO
+        //TODO 优化点击翻页
         if (e.clientY <= window.innerHeight / 5) {
             // changeUp()
         } else if (e.clientY >= (window.innerHeight * 4) / 5) {
@@ -169,7 +169,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video url={videoArray[A.current % videoArray.length]} item={videoItems[A.current]} isPlay={isPlay} />
+                <Video item={videoItems[A.current]} isPlay={isPlay} />
             </Transition>
             <Transition
                 as={Fragment}
@@ -197,7 +197,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video url={videoArray[B.current % videoArray.length]} item={videoItems[B.current]} isPlay={isPlay} />
+                <Video item={videoItems[B.current]} isPlay={isPlay} />
             </Transition>
         </div>
     )

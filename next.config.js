@@ -9,15 +9,10 @@ const nextConfig = {
         pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'picsum.photos',
+        protocol: 'http',
+        hostname: 's3h4ivnuq.hn-bkt.clouddn.com',
         pathname: '/**'
       },
-      {
-        protocol: 'https',
-        hostname: 'loremflickr.com',
-        pathname: '/**'
-      }
     ],
   },
 };

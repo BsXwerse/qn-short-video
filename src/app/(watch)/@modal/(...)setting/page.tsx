@@ -8,6 +8,7 @@ export default function Setting() {
         html?.classList.toggle('dark')
     }
 
+    //TODO 夜间模式调整，刷新保留
     return (
         <Modal>
             <div className=" bg-background border-muted-foreground border-[1px] rounded-lg max-w-xs max-h-[90vh] w-auto h-auto p-4 text-foreground space-y-2 font-semibold text-xl overflow-auto text-center">
