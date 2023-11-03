@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma'
-import { UserDto } from '@/test/test'
 
 export async function isFollowed(userId: string, uploaderId: string) {
     const count = await prisma.user.count({

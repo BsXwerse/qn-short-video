@@ -6,11 +6,12 @@ import DefaultCover from '../../public/imgs/default.png'
 import Image from 'next/image'
 import clsx from 'clsx'
 
-const Video = forwardRef<HTMLDivElement, { item: VideoItem; isPlay: boolean }>(({ item, isPlay }, ref) => {
+const Video = forwardRef<HTMLDivElement, { item: VideoItem; isPlay: boolean; isAuto: boolean }>(({ item, isPlay, isAuto }, ref) => {
     const [open, setOpen] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
+        setOpen(isAuto)
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 setOpen(false)

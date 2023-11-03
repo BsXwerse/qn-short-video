@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
     try {
-        //TODO 参数检查
-        save(await req.json())
+        const body = await req.json()
+        save(body)
         return NextResponse.json({
             code: 200,
             msg: 'video save success'

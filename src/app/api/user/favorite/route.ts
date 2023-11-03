@@ -6,28 +6,16 @@ export async function GET(req: NextRequest) {
     const p = url.searchParams
     try {
         const userId = p.get('userId')
-        const all = p.get('all')
         const videoId = p.get('videoId')
-        if (userId === null || (all === 'true' && videoId !== null)) {
+        if (userId === null || videoId === null) {
             throw new Error('invild args')
         }
-        if (all !== 'true') {
-            if (videoId === null) {
-                throw new Error('invild args')
-            }
-            const isF = await isFavorited(userId, parseInt(videoId))
-            return NextResponse.json({
-                code: 200,
-                msg: 'ok',
-                body: isF
-            })
-        } else {
-            //TODO
-            return NextResponse.json({
-                code: 500,
-                msg: 'not impl yet'
-            })
-        }
+        const isF = await isFavorited(userId, parseInt(videoId))
+        return NextResponse.json({
+            code: 200,
+            msg: 'ok',
+            body: isF
+        })
     } catch (e: any) {
         console.error(e.message)
         return NextResponse.json({

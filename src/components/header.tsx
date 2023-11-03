@@ -6,12 +6,11 @@ import MobileTag from './mobile-tag'
 import MobileNav from './moblie-nav'
 
 export default function Header() {
-    //TODO 热门视频排序
     const pathname = usePathname().split('/')
     return (
         <header className="h-12 fixed inset-x-0 mx-auto max-w-5xl flex items-center justify-between  bg-background/30 rounded backdrop-blur-[10px] shadow-md text-foreground z-[200] lg:hidden">
             <LoginBar showName={false} />
-            <span className=" font-semibold">{pathname.length !== 3 ? 'hot' : pathname[2]}</span>
+            <span className=" font-semibold">{pathname.length !== 3 ? null : pathname[2]}</span>
             <div className="flex items-center justify-center px-8 gap-5">
                 <MobileTag />
                 <MobileNav />

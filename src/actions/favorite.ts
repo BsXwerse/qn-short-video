@@ -16,28 +16,34 @@ export async function isFavorited(userId: string, videoId: number) {
 
 export async function addOrCancel(userId: string, videoId: number) {
     if (await isFavorited(userId, videoId)) {
-        await prisma.user.update({
+        await prisma.video.update({
             where: {
-                id: userId
+                id: videoId
             },
             data: {
-                favorites: {
+                favoritedBy: {
                     disconnect: {
-                        id: videoId
+                        id: userId
                     }
+                },
+                likes: {
+                    decrement: 1
                 }
             }
         })
     } else {
-        await prisma.user.update({
+        await prisma.video.update({
             where: {
-                id: userId
+                id: videoId
             },
             data: {
-                favorites: {
+                favoritedBy: {
                     connect: {
-                        id: videoId
+                        id: userId
                     }
+                },
+                likes: {
+                    increment: 1
                 }
             }
         })

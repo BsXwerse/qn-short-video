@@ -39,6 +39,9 @@ export async function getByTag(pageNum: number, pageSize: number, tag?: string) 
                     image: true
                 }
             }
+        },
+        orderBy: {
+            likes: 'desc'
         }
     })
     videos.forEach((x) => {
@@ -85,11 +88,34 @@ export async function getById(id: number) {
     return res
 }
 
-// export async function testGetAllId() {
-//     const res = await prisma.user.findMany({
-//         select: {
-//             id: true
-//         }
-//     })
-//     return res
-// }
+export async function getByKeyWords(keywords: string) {
+    const res = await prisma.video.findMany({
+        where: {
+            OR: [
+                {
+                    title: {
+                        contains: keywords
+                    }
+                },
+                {
+                    introduction: {
+                        contains: keywords
+                    }
+                }
+            ]
+        },
+        include: {
+            uploder: {
+                select: {
+                    name: true,
+                    image: true
+                }
+            }
+        }
+    })
+    res.forEach((x) => {
+        x.coverUrl = getUrl(x.coverUrl ? x.coverUrl : 'imgs/default.png')
+        x.url = getUrl(x.url as string)
+    })
+    return res
+}

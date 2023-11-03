@@ -3,18 +3,16 @@ import VideoCard from '@/components/video-card'
 import { auth } from '@/lib/auth'
 import { VideoItem } from '@/types/video'
 import { IconHome } from '@tabler/icons-react'
+import Image from 'next/image'
 import Link from 'next/link'
+import DefaultImg from '../../../public/imgs/default.png'
 
 export default async function Favorite() {
     const session = await auth()
     const videos: VideoItem[] = session ? await getFavorites(session.user.id) : []
     return (
         <>
-            <div className="text-foreground mx-auto max-w-3xl space-y-10 p-10">
-                {videos.map((x) => (
-                    <VideoCard key={x.id} item={x} />
-                ))}
-            </div>
+            <div className="text-foreground mx-auto max-w-3xl space-y-10 p-10">{videos.length === 0 ? <Image src={DefaultImg} alt="no video" width={1000} height={1000} className="w-full h-full" /> : videos.map((x) => <VideoCard key={x.id} item={x} jumpUrl="/favorites/play/" />)}</div>
             <Link href="/" className="fixed right-10 bottom-10 lg:right-20 lg:bottom-20 text-foreground">
                 <IconHome className="h-8 w-8" />
             </Link>

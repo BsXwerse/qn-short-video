@@ -1,6 +1,6 @@
 # qn-short-video
 
-### todo
+### TODO
 
 - login ✔
 - upload ✔
@@ -8,8 +8,5 @@
 - favorite ✔
 - follow ✔
 - dark & light mode ✔
-- search
-
-TODO
-播放视频两边变没
-七牛云sdk warning
+- search ✔
+- metadata

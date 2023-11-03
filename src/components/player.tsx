@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, Fragment, useCallback } from 'react'
+import { useState, useEffect, useRef, Fragment, useCallback, MouseEvent } from 'react'
 import { Transition } from '@headlessui/react'
 import Video from '@/components/video'
 import { throttle } from '@/utils/fn'
@@ -8,6 +8,8 @@ import Favorite from '@/components/favorite'
 import clsx from 'clsx'
 import { VideoItem } from '@/types/video'
 import { get } from '@/actions/request'
+import { emitter } from '@/lib/mitt'
+import { IconArrowBigDownLineFilled, IconArrowBigUpLineFilled } from '@tabler/icons-react'
 
 const PAGE_SIZE = 5
 
@@ -20,6 +22,7 @@ export default function Player({ tag }: { tag?: string }) {
     const videoRef = useRef<VideoItem[]>(videoItems)
     const [isPlay, setIsPaly] = useState(false)
     const isPlayRef = useRef(isPlay)
+    const [isAuto, setAuto] = useState(false)
     const cur = useRef(0)
     const A = useRef(0)
     const B = useRef(0)
@@ -92,12 +95,7 @@ export default function Player({ tag }: { tag?: string }) {
     }, [])
 
     const handleClick = useCallback((e: PointerEvent) => {
-        //TODO 优化点击翻页
-        if (e.clientY <= window.innerHeight / 5) {
-            // changeUp()
-        } else if (e.clientY >= (window.innerHeight * 4) / 5) {
-            // changeDown()
-        } else {
+        if (e.clientY < (window.innerHeight * 4) / 5 && e.clientY > window.innerHeight / 3) {
             isPlayRef.current = !isPlayRef.current
             setIsPaly(isPlayRef.current)
         }
@@ -113,6 +111,7 @@ export default function Player({ tag }: { tag?: string }) {
 
     useEffect(
         useCallback(() => {
+            emitter.on('autoplay', (x: any) => setAuto(x))
             const warpW = throttle(handleWheel, 600)
             const warpC = throttle(handleClick, 600)
             const warpK = throttle(handleKeyDown, 600)
@@ -143,6 +142,14 @@ export default function Player({ tag }: { tag?: string }) {
     return (
         <div className="h-screen relative overflow-hidden" ref={mainRef}>
             <Favorite videoId={videoItems.length === 0 ? -1 : videoItems[cur.current % PAGE_SIZE].id} />
+            <div className="fixed right-5 top-28 flex lg:hidden flex-col items-center justify-center text-foreground/30 z-[200] gap-5">
+                <button onClick={changeUp}>
+                    <IconArrowBigUpLineFilled className="w-10 h-10" />
+                </button>
+                <button onClick={changeDown}>
+                    <IconArrowBigDownLineFilled className="w-10 h-10" />
+                </button>
+            </div>
             <Transition
                 as={Fragment}
                 show={togle}
@@ -169,7 +176,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video item={videoItems[A.current]} isPlay={isPlay} />
+                <Video item={videoItems[A.current]} isPlay={isPlay} isAuto={isAuto} />
             </Transition>
             <Transition
                 as={Fragment}
@@ -197,7 +204,7 @@ export default function Player({ tag }: { tag?: string }) {
                     }
                 )}
             >
-                <Video item={videoItems[B.current]} isPlay={isPlay} />
+                <Video item={videoItems[B.current]} isPlay={isPlay} isAuto={isAuto} />
             </Transition>
         </div>
     )

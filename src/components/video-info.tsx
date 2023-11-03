@@ -54,7 +54,7 @@ export default function VideoInfo({ item, isShow }: { item: VideoItem; isShow: b
         item && (
             <Transition show={isShow} className="absolute h-full w-full z-[100] text-foreground flex flex-col justify-between">
                 <Transition.Child
-                    className="absolute h-full w-full bg-gradient-to-b from-black/80 to-60%"
+                    className="absolute h-full w-full bg-gradient-to-b from-black/50 to-60% mt-10"
                     enter="transition ease-out duration-150"
                     enterFrom="opacity-0 -translate-y-40"
                     enterTo="opacity-100 translate-y-0"

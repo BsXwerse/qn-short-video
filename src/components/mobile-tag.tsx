@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { IconCategory, IconBallFootball } from '@tabler/icons-react'
+import { IconCategory } from '@tabler/icons-react'
 import { useState, Fragment, useEffect } from 'react'
 import { get } from '@/actions/request'
 import { Tag } from '@prisma/client'
@@ -45,7 +45,6 @@ export default function MobileTag() {
                         tags.map((x) => (
                             <Link href={'/tag/' + x.name} key={x.id}>
                                 <div className=" px-3 py-1 inline-flex gap-2 rounded-full items-center hover:bg-foreground/10 transition-colors duration-150 ">
-                                    <IconBallFootball />
                                     <span>{x.name}</span>
                                 </div>
                             </Link>

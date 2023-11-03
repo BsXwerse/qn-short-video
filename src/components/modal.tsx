@@ -38,7 +38,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
 
     return (
         <Transition as={Fragment} show={show} enter="transition duration-100 ease-out" enterFrom="transform scale-95 opacity-0" enterTo="transform scale-100 opacity-100" leave="transition duration-75 ease-out" leaveFrom="transform scale-100 opacity-100" leaveTo="transform scale-95 opacity-0">
-            <div ref={ref} className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center" onClick={handleClick}>
+            <div ref={ref} className="fixed inset-0 bg-black/60 z-[200] flex flex-col items-center justify-center overflow-auto" onClick={handleClick}>
                 {children}
             </div>
         </Transition>

@@ -35,7 +35,6 @@ export default function RightBar() {
                         <span>search</span>
                     </div>
                 </Link>
-                {/* TODO 显示一个modal */}
                 <Link href="/follow">
                     <div className=" px-5 inline-flex gap-2  h-14 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
                         <IconUserPlus />
