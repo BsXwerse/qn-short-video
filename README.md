@@ -1,11 +1,12 @@
 # qn-short-video
 
-### todo
+### TODO
 
 - login ✔
-- upload 
+- upload ✔
 - video title & introduction ✔
-- favorite
-- follow
-- dark & light mode
-- search
+- favorite ✔
+- follow ✔
+- dark & light mode ✔
+- search ✔
+- metadata
