@@ -8,8 +8,8 @@ const nextConfig = {
         pathname: "/**",
       },
       {
-        protocol: 'http',
-        hostname: 's3h4ivnuq.hn-bkt.clouddn.com',
+        protocol: 'https',
+        hostname: 'cdn.qiniu.bsxwerse.top',
         pathname: '/**'
       },
     ],
