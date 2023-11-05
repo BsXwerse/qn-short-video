@@ -9,4 +9,5 @@
 - follow ✔
 - dark & light mode ✔
 - search ✔
-- metadata
+- metadata ✔ 
+- upload limit & clean work ✔ 

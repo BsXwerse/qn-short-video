@@ -35,7 +35,6 @@ const options: NextAuthOptions = {
     }
 }
 
-
 const handlers = NextAuth(options)
 
 export async function auth() {

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { MouseEvent, useState, useEffect } from 'react'
 import { post } from '@/actions/request'
 import toast from 'react-hot-toast'
-import { IconPlus } from '@tabler/icons-react'
+import { IconPlus, IconLoader2 } from '@tabler/icons-react'
 import { Tag } from '@prisma/client'
 import { get } from '@/actions/request'
 import { uploadOSS } from '@/actions/oss-client'
@@ -23,6 +23,9 @@ interface MyFormElement extends HTMLFormElement {
     readonly elements: FormElements
 }
 
+const KB = 1024
+const MB = 1024 * KB
+
 export default function Upload() {
     const router = useRouter()
     const { data: session, status } = useSession()
@@ -31,6 +34,24 @@ export default function Upload() {
     const [cover, setCover] = useState<File>()
     const [video, setVideo] = useState<File>()
     const [tags, setTags] = useState<Tag[]>([])
+
+    if (status === 'unauthenticated') {
+        return (
+            <div className="w-screen h-screen inset-x-0 flex items-center justify-center text-foreground text-2xl">
+                <Link href="/api/auth/signin" className=" underline">
+                    please login
+                </Link>
+            </div>
+        )
+    }
+
+    if (status === 'loading') {
+        return (
+            <div className="w-screen h-screen flex items-center justify-center text-2xl text-foreground">
+                <IconLoader2 className=" animate-spin" />
+            </div>
+        )
+    }
 
     useEffect(() => {
         const getData = async () => {
@@ -42,34 +63,48 @@ export default function Upload() {
         getData()
     }, [])
 
-    if (status !== 'authenticated') {
-        return (
-            <div className="mx-auto w-screen h-screen inset-x-0 flex items-center justify-center text-foreground text-lg">
-                <Link href="/api/auth/signin" className=" underline">
-                    please login
-                </Link>
-            </div>
-        )
-    }
-
     const filterTags = tagValue === '' ? tags : tags.filter((x) => x.name.toLowerCase().includes(tagValue.toLowerCase()))
 
     const handleSubmit = async (e: React.FormEvent<MyFormElement>) => {
         e.preventDefault()
+        if (!session) {
+            toast.error('Session get failed')
+            return
+        }
 
         if (!video || !cover) {
             toast.error('Video and cover must be selected')
             return
         }
+
+        if (cover.size > 2 * MB) {
+            toast.error('Cover size limit 2mb')
+            return
+        }
+        if (video.size > 15 * MB) {
+            toast.error('Video size limit 15mb')
+            return
+        }
+
         if (!video.name.endsWith('.mp4')) {
-            toast.error('Only supports MP4')
+            toast.error('Video only supports mp4')
+            return
+        }
+
+        if (!cover.name.endsWith('.jpg') && !cover.name.endsWith('.png')) {
+            toast.error('Cover only supports png or jpg')
             return
         }
 
         const v_uuid = uuidv4()
         const c_uuid = uuidv4()
         const v_key = 'video/' + v_uuid + '.mp4'
-        const c_key = 'cover/' + c_uuid + '.jpg'
+        let c_key = 'cover/' + c_uuid
+        if (cover.name.endsWith('jpg')) {
+            c_key += '.jpg'
+        } else {
+            c_key += '.png'
+        }
 
         const dto: videoDto = {
             title: e.currentTarget.elements.title.value,
@@ -82,27 +117,29 @@ export default function Upload() {
 
         const videoPromise = uploadOSS(video, v_key)
         const coverPromise = uploadOSS(cover, c_key)
+        const ossPromise = Promise.all([videoPromise, coverPromise])
 
         const dbPromise = new Promise(async (resolve, reject) => {
-            const res = await post<undefined>('/api/video', dto)
-            if (res.code === 200) {
-                resolve('done')
-            } else {
-                reject()
+            try {
+                await ossPromise
+                const res = await post<undefined>('/api/video', dto)
+                if (res.code === 200) {
+                    resolve('done')
+                }
+            } catch (err: any) {
+                reject(err)
             }
         })
-        const promise = Promise.all([videoPromise, coverPromise, dbPromise])
-        //TODO 上传失败做清理工作
 
-        toast.promise(promise, {
+        toast.promise(dbPromise, {
             loading: 'uploading...',
             success: 'upload successful',
             error: 'upload failed'
         })
 
-        promise.then(
+        dbPromise.then(
             (x) => router.push('/'),
-            (x) => {}
+            (x) => console.error(x)
         )
     }
 

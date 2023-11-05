@@ -9,6 +9,15 @@ import DefaultImg from '../../../public/imgs/default.png'
 
 export default async function Favorite() {
     const session = await auth()
+    if (!session) {
+        return (
+            <div className=" h-screen w-screen flex items-center justify-center">
+                <Link href="/api/auth/signin" className=" text-foreground text-2xl underline hover:text-foreground/50">
+                    please login
+                </Link>
+            </div>
+        )
+    }
     const videos: VideoItem[] = session ? await getFavorites(session.user.id) : []
     return (
         <>

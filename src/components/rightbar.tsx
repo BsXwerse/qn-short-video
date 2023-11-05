@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { IconHeart, IconSettings, IconUpload, IconSearch, IconTestPipe2, IconUserPlus } from '@tabler/icons-react'
 import LoginBar from './loginbar'
 
-export default function RightBar() {
+export default async function RightBar() {
     return (
         <div className="hidden h-screen right-0 w-60 shrink-0 mr-5 lg:flex flex-col justify-between text-xl border-l-[1px] text-foreground border-foreground/30">
             <div className="flex flex-col gap-4 py-10 px-8">

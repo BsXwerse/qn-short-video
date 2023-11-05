@@ -3,10 +3,12 @@ import { useSession } from 'next-auth/react'
 import { get, post } from '@/actions/request'
 import clsx from 'clsx'
 import { useCallback, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Favorite({ videoId }: { videoId: number }) {
     const { data: session, status } = useSession()
     const [isFavorited, setFavorite] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         if (status === 'authenticated' && videoId !== -1) {
@@ -45,6 +47,8 @@ export default function Favorite({ videoId }: { videoId: number }) {
                     }
                 })
                 .catch((x) => console.error(x))
+        } else if (status === 'unauthenticated') {
+            router.push('/api/auth/signin')
         }
     }, [status, videoId])
 

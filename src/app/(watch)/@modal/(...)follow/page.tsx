@@ -2,9 +2,19 @@ import { getAll } from '@/actions/follow'
 import Modal from '@/components/modal'
 import { auth } from '@/lib/auth'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default async function Follow() {
     const session = await auth()
+    if (!session) {
+        return (
+            <Modal>
+                <Link href="/api/auth/signin" className=" text-white text-2xl underline hover:text-white/50">
+                    please login
+                </Link>
+            </Modal>
+        )
+    }
     const follows = session ? await getAll(session.user.id) : []
     return (
         <Modal>

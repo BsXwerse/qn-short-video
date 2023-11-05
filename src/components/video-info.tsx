@@ -5,10 +5,12 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { get, post } from '@/actions/request'
 import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function VideoInfo({ item, isShow }: { item: VideoItem; isShow: boolean }) {
     const [isFollowed, setFollow] = useState(false)
     const { data: session, status } = useSession()
+    const router = useRouter()
 
     useEffect(() => {
         if (status === 'authenticated' && item) {
@@ -47,6 +49,8 @@ export default function VideoInfo({ item, isShow }: { item: VideoItem; isShow: b
                     }
                 })
                 .catch((x) => console.error(x))
+        } else if (status === 'unauthenticated') {
+            router.push('/api/auth/signin')
         }
     }, [status, item])
 
