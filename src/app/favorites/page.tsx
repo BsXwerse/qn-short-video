@@ -7,6 +7,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import DefaultImg from '../../../public/imgs/default.png'
 
+export const dynamic = "force-dynamic";
+
 export default async function Favorite() {
     const session = await auth()
     if (!session) {

@@ -1,7 +1,9 @@
 import { getAllTags } from '@/actions/tag'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function GET() {
     try {
         const tags = await getAllTags()
         return NextResponse.json({
