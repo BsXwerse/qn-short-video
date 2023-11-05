@@ -35,6 +35,16 @@ export default function Upload() {
     const [video, setVideo] = useState<File>()
     const [tags, setTags] = useState<Tag[]>([])
 
+    useEffect(() => {
+        const getData = async () => {
+            const res = await get<Tag[]>('/api/tag')
+            if (res.body) {
+                setTags(res.body)
+            }
+        }
+        getData()
+    }, [])
+
     if (status === 'unauthenticated') {
         return (
             <div className="w-screen h-screen inset-x-0 flex items-center justify-center text-foreground text-2xl">
@@ -53,15 +63,7 @@ export default function Upload() {
         )
     }
 
-    useEffect(() => {
-        const getData = async () => {
-            const res = await get<Tag[]>('/api/tag')
-            if (res.body) {
-                setTags(res.body)
-            }
-        }
-        getData()
-    }, [])
+
 
     const filterTags = tagValue === '' ? tags : tags.filter((x) => x.name.toLowerCase().includes(tagValue.toLowerCase()))
 
