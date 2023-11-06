@@ -1,8 +1,6 @@
 import { getAllTags } from '@/actions/tag'
 import { NextResponse } from 'next/server'
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
     try {
         const tags = await getAllTags()

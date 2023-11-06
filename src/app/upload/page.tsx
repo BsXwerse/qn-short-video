@@ -70,7 +70,7 @@ export default function Upload() {
         if (!session) {
             toast.error('Session get failed')
             return
-        } 
+        }
 
         if (!video || !cover) {
             toast.error('Video and cover must be selected')
@@ -112,7 +112,7 @@ export default function Upload() {
             tags: addedTags,
             cover: c_key,
             video: v_key,
-            uploaderId: session.user.id 
+            uploaderId: session.user.id
         }
 
         const videoPromise = uploadOSS(video, v_key)

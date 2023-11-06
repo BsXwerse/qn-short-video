@@ -1,6 +1,8 @@
 import { getAllTags } from '@/actions/tag'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function LeftBar() {
     const tags = await getAllTags()
     return (
