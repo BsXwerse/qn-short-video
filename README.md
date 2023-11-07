@@ -12,6 +12,10 @@ https://qn-short-video.vercel.app/
 
 [demo video](./demo-video.mp4)
 
+###### 设计文档
+
+[doc](./docs/架构设计文档.md)
+
 #### 本地运行
 
 创建.env文件配置相关环境变量，示例为.env.example
@@ -22,6 +26,4 @@ pnpm prisma db push
 pnpm build
 pnpm start
 ```
-
-
 
