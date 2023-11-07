@@ -236,12 +236,10 @@ export default function Upload() {
                                 <div className="text-center text-muted-foreground">
                                     <div className="mt-4 flex text-sm leading-6 ">
                                         <label htmlFor="video-cover" className="relative cursor-pointer rounded-md font-semibold text-indigo-600 outline-none  hover:text-indigo-400">
-                                            <span>Upload file</span>
                                             <input
                                                 id="video-cover"
                                                 name="video-cover"
                                                 type="file"
-                                                className="sr-only"
                                                 onChange={(e) => {
                                                     if (e.target.files) {
                                                         setCover(e.target.files[0])
@@ -249,9 +247,8 @@ export default function Upload() {
                                                 }}
                                             />
                                         </label>
-                                        <p className="pl-1">or drag and drop</p>
                                     </div>
-                                    <p className="text-xs leading-50">PNG or JPG up to 1MB</p>
+                                    <p className="text-xs leading-50">PNG or JPG up to 2MB</p>
                                 </div>
                             </div>
                         </div>
