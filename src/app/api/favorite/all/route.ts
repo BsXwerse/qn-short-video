@@ -1,14 +1,14 @@
-import { getByKeyWords } from "@/actions/video";
+import { getFavorites } from "@/actions/video";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   try {
-    const key = url.searchParams.get("keywords");
-    if (key === null) {
+    const id = url.searchParams.get("id");
+    if (id === null) {
       throw new Error("invild args");
     }
-    const items = await getByKeyWords(key);
+    const items = await getFavorites(id);
     return NextResponse.json({
       code: 200,
       msg: "ok",
