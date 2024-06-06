@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { videoDto } from "@/types/video";
+import { VideoDto } from "@/types/video";
 import { getUrl } from "./oss-server";
 
 export async function save({
@@ -9,7 +9,7 @@ export async function save({
   cover,
   video,
   uploaderId,
-}: videoDto) {
+}: VideoDto) {
   await prisma.video.create({
     data: {
       title,

@@ -1,6 +1,6 @@
 "use client";
 
-import { videoDto } from "@/types/video";
+import { VideoDto } from "@/types/video";
 import { Combobox } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -13,26 +13,30 @@ import { uploadOSS } from "@/actions/oss-client";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
 import { get, post } from "@/common/http";
-
-interface FormElements extends HTMLFormControlsCollection {
-  title: HTMLInputElement;
-  introduction: HTMLTextAreaElement;
-}
-
-interface MyFormElement extends HTMLFormElement {
-  readonly elements: FormElements;
-}
+import { useForm, SubmitHandler } from "react-hook-form";
 
 const KB = 1024;
 const MB = 1024 * KB;
+
+type FormValues = {
+  title: string;
+  introduction: string;
+  cover: FileList;
+  video: FileList;
+  uploaderId: string;
+};
 
 export default function Upload() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [tagValue, setTagValue] = useState("");
   const [addedTags, setAddedTags] = useState<string[]>([]);
-  const [cover, setCover] = useState<File>();
-  const [video, setVideo] = useState<File>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
 
   const { data: tags } = useSWR<Tag[]>("/api/tag", get);
 
@@ -61,50 +65,23 @@ export default function Upload() {
           x.name.toLowerCase().includes(tagValue.toLowerCase()),
         ) ?? [];
 
-  const handleSubmit = async (e: React.FormEvent<MyFormElement>) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
     if (!session) {
       toast.error("Session get failed");
       return;
     }
-
-    if (!video || !cover) {
-      toast.error("Video and cover must be selected");
-      return;
-    }
-
-    if (cover.size > 2 * MB) {
-      toast.error("Cover size limit 2mb");
-      return;
-    }
-    if (video.size > 15 * MB) {
-      toast.error("Video size limit 15mb");
-      return;
-    }
-
-    if (!video.name.endsWith(".mp4")) {
-      toast.error("Video only supports mp4");
-      return;
-    }
-
-    if (!cover.name.endsWith(".jpg") && !cover.name.endsWith(".png")) {
-      toast.error("Cover only supports png or jpg");
-      return;
-    }
+    const cover = data.cover[0];
+    const video = data.video[0];
 
     const v_uuid = uuidv4();
     const c_uuid = uuidv4();
     const v_key = "video/" + v_uuid + ".mp4";
     let c_key = "cover/" + c_uuid;
-    if (cover.name.endsWith("jpg")) {
-      c_key += ".jpg";
-    } else {
-      c_key += ".png";
-    }
+    cover.name.endsWith("jpg") ? (c_key += ".jpg") : (c_key += ".png");
 
-    const dto: videoDto = {
-      title: e.currentTarget.elements.title.value,
-      introduction: e.currentTarget.elements.introduction.value,
+    const dto: VideoDto = {
+      title: data.title,
+      introduction: data.introduction,
       tags: addedTags,
       cover: c_key,
       video: v_key,
@@ -139,7 +116,7 @@ export default function Upload() {
 
   return (
     <div className="mx-auto max-w-2xl inset-x-0 flex items-center justify-center text-lg bg-background text-foreground">
-      <form className="w-full py-10 px-8" onSubmit={handleSubmit}>
+      <form className="w-full py-10 px-8" onSubmit={handleSubmit(onSubmit)}>
         <div className="pb-12">
           <h2 className="text-lg font-semibold leading-7 text-foreground">
             Upload
@@ -151,41 +128,48 @@ export default function Upload() {
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {/* title */}
             <div className="sm:col-span-4">
-              <label
-                htmlFor="title"
-                className="block text-lg font-medium leading-6 text-foreground"
-              >
-                Title
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 sm:max-w-md outline-none">
-                  <input
-                    type="text"
-                    name="title"
-                    id="title"
-                    autoComplete="title"
-                    className="block flex-1 border-0 bg-transparent py-1.5 px-2 text-foreground placeholder:text-muted-foreground placeholder:text-sm focus:ring-0 sm:text-sm sm:leading-6 outline-none"
-                    placeholder="video title"
-                  />
-                </div>
+              <div className="flex gap-5 items-center">
+                <label
+                  htmlFor="title"
+                  className="block text-lg font-medium leading-6 text-foreground"
+                >
+                  Title
+                </label>
+                {errors.title && (
+                  <span className=" text-red-500 text-sm">
+                    Please enter title
+                  </span>
+                )}
+              </div>
+              <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 sm:max-w-md outline-none mt-2">
+                <input
+                  className="block flex-1 border-0 bg-transparent py-1.5 px-2 text-foreground placeholder:text-muted-foreground placeholder:text-sm focus:ring-0 sm:text-sm sm:leading-6 outline-none"
+                  placeholder="video title"
+                  {...register("title", { required: true })}
+                />
               </div>
             </div>
             {/*introduction  */}
             <div className="col-span-full">
-              <label
-                htmlFor="introduction"
-                className="block text-lg font-medium leading-6 text-foreground"
-              >
-                Introduction
-              </label>
+              <div className="flex gap-5 items-center">
+                <label
+                  htmlFor="title"
+                  className="block text-lg font-medium leading-6 text-foreground"
+                >
+                  Introduction
+                </label>
+                {errors.introduction && (
+                  <span className=" text-red-500 text-sm">
+                    Please enter introduction
+                  </span>
+                )}
+              </div>
               <div className="mt-2 text-foreground">
                 <textarea
-                  id="introduction"
-                  name="introduction"
                   rows={3}
                   className="block w-full rounded-md p-1.5 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2  focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-none text-foreground bg-background"
                   placeholder="some words."
-                  defaultValue={""}
+                  {...register("introduction", { required: true })}
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -246,12 +230,19 @@ export default function Upload() {
             </div>
             {/* cover */}
             <div className="col-span-full">
-              <label
-                htmlFor="cover-photo"
-                className="block text-lg font-medium leading-6 text-foreground"
-              >
-                Video cover
-              </label>
+              <div className="flex gap-5 items-center">
+                <label
+                  htmlFor="title"
+                  className="block text-lg font-medium leading-6 text-foreground"
+                >
+                  Video cover
+                </label>
+                {errors.cover && (
+                  <span className=" text-red-500 text-sm">
+                    {errors.cover.message}
+                  </span>
+                )}
+              </div>
               <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-muted-foreground px-6 py-10">
                 <div className="text-center text-muted-foreground">
                   <div className="mt-4 flex text-sm leading-6 ">
@@ -260,14 +251,23 @@ export default function Upload() {
                       className="relative cursor-pointer rounded-md font-semibold text-indigo-600 outline-none  hover:text-indigo-400"
                     >
                       <input
-                        id="video-cover"
-                        name="video-cover"
                         type="file"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            setCover(e.target.files[0]);
-                          }
-                        }}
+                        {...register("cover", {
+                          required: true,
+                          validate: (v) => {
+                            const file = v[0];
+                            if (
+                              !file.name.endsWith(".jpg") &&
+                              !file.name.endsWith(".png")
+                            ) {
+                              return "Only supports jpg or png";
+                            }
+                            if (file.size > 2 * MB) {
+                              return "Cover size limit 2mb";
+                            }
+                            return true;
+                          },
+                        })}
                       />
                     </label>
                   </div>
@@ -277,12 +277,19 @@ export default function Upload() {
             </div>
             {/* video */}
             <div className="col-span-full">
-              <label
-                htmlFor="photo"
-                className="block text-lg font-medium leading-6 text-foreground"
-              >
-                Video
-              </label>
+              <div className="flex gap-5 items-center">
+                <label
+                  htmlFor="title"
+                  className="block text-lg font-medium leading-6 text-foreground"
+                >
+                  Video
+                </label>
+                {errors.video && (
+                  <span className=" text-red-500 text-sm">
+                    {errors.video.message}
+                  </span>
+                )}
+              </div>
               <div className="mt-2 flex items-center gap-x-3">
                 <input
                   type="file"
@@ -293,11 +300,16 @@ export default function Upload() {
                                   file:bg-foreground file:text-indigo-600
                                   hover:file:bg-foreground/70 hover:file:cursor-pointer
                                   "
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setVideo(e.target.files[0]);
-                    }
-                  }}
+                  {...register("video", {
+                    required: true,
+                    validate: (v) => {
+                      const file = v[0];
+                      if (!file.name.endsWith(".mp4"))
+                        return "Only supports mp4";
+                      if (file.size > 15 * MB) return "Video size limit 15mb";
+                      return true;
+                    },
+                  })}
                 />
               </div>
             </div>

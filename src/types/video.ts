@@ -1,6 +1,6 @@
 import { Video } from "@prisma/client";
 
-export interface videoDto {
+export interface VideoDto {
   title: string;
   introduction: string;
   tags: string[];
