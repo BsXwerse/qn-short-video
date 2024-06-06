@@ -5,11 +5,11 @@ import { Popover, Transition } from "@headlessui/react";
 import { usePopper } from "react-popper";
 import { IconCategory } from "@tabler/icons-react";
 import { useState, Fragment, useEffect } from "react";
-import { get } from "@/actions/request";
 import { Tag } from "@prisma/client";
+import useSWR from "swr";
+import { get } from "@/common/http";
 
 export default function MobileTag() {
-  const [tags, setTags] = useState<Tag[]>([]);
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
@@ -27,15 +27,7 @@ export default function MobileTag() {
     ],
   });
 
-  useEffect(() => {
-    const getData = async () => {
-      const res = await get<Tag[]>("/api/tag");
-      if (res.body) {
-        setTags(res.body);
-      }
-    };
-    getData();
-  }, []);
+  const { data: tags } = useSWR<Tag[]>("/api/tag", get);
 
   return (
     <Popover>

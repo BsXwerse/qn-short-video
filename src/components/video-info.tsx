@@ -3,9 +3,10 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { get, post } from "@/actions/request";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import { get, post } from "@/common/http";
 
 export default function VideoInfo({
   item,
@@ -14,51 +15,29 @@ export default function VideoInfo({
   item: VideoItem;
   isShow: boolean;
 }) {
-  const [isFollowed, setFollow] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === "authenticated" && item) {
-      const userId = session.user.id;
-      const params = new URLSearchParams();
-      params.append("userId", userId);
-      params.append("uploaderId", item.uploderId);
-      get<boolean>("/api/user/follow", params)
-        .then((x) => {
-          if (x.code !== 200) {
-            console.error(x.msg);
-          } else {
-            if (x.body !== undefined) {
-              setFollow(x.body);
-            }
-          }
-        })
-        .catch((x) => console.error(x));
-    }
-  }, [status, item, session?.user.id]);
+  const { data: isFollowed, mutate } = useSWR(
+    ["/api/user/follow", session?.user.id ?? "", item?.uploderId ?? ""],
+    ([url, userId, uploaderId]) =>
+      get<boolean>(url, {
+        userId,
+        uploaderId,
+      }),
+  );
 
   const handleClick = useCallback(() => {
-    if (status === "authenticated" && item) {
-      const params = {
-        userId: session.user.id,
-        uploaderId: item.uploderId,
-      };
-      post<boolean>("/api/user/follow", params)
-        .then((x) => {
-          if (x.code !== 200) {
-            console.error(x.msg);
-          } else {
-            if (x.body !== undefined) {
-              setFollow(x.body);
-            }
-          }
-        })
-        .catch((x) => console.error(x));
-    } else if (status === "unauthenticated") {
+    if (status === "unauthenticated") {
       router.push("/api/auth/signin");
+    } else {
+      session &&
+        post("/api/user/follow", {
+          userId: session.user.id,
+          uploaderId: item?.uploderId,
+        }).then(() => mutate());
     }
-  }, [status, item, session?.user.id, router]);
+  }, [item?.uploderId, mutate, router, session, status]);
 
   return (
     item && (

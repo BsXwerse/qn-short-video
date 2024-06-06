@@ -1,10 +1,10 @@
 "use client";
 
 import Loading from "@/components/loading";
-import { get } from "@/service/core";
 import { User } from "@prisma/client";
 import useSWR from "swr";
 import Image from "next/image";
+import { get } from "@/common/http";
 
 export default function FollowList({ id }: { id: string }) {
   const { data: follows, isLoading } = useSWR(

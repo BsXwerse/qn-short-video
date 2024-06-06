@@ -33,7 +33,7 @@ export const fetcher = async <T>(
 export const get = async <T = any>(
   url: RequestInfo,
   params?: Record<string, any>,
-  optinos?: FetchOptions<"json">,
+  options?: FetchOptions<"json">,
 ) => {
   const query = qs.stringify(params, {
     arrayFormat: "comma",
@@ -41,13 +41,13 @@ export const get = async <T = any>(
     addQueryPrefix: true,
     encode: true,
   });
-  return await fetcher<T>(`${url}${query}`, "GET", undefined, optinos);
+  return await fetcher<T>(`${url}${query}`, "GET", undefined, options);
 };
 
 export const post = async <T = any>(
   url: RequestInfo,
   body: Record<any, any> = {},
-  optinos?: FetchOptions<"json">,
+  options?: FetchOptions<"json">,
 ) => {
-  return await fetcher<T>(url, "POST", body, optinos);
+  return await fetcher<T>(url, "POST", body, options);
 };

@@ -4,7 +4,6 @@ import {
   IconSettings,
   IconUpload,
   IconSearch,
-  IconTestPipe2,
   IconUserPlus,
 } from "@tabler/icons-react";
 import LoginBar from "./loginbar";

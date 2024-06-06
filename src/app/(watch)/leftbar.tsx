@@ -1,10 +1,10 @@
 "use client";
 
-import { get } from "@/service/core";
 import { Tag } from "@prisma/client";
 import Link from "next/link";
 import useSWR from "swr";
-import Loading from "./loading";
+import Loading from "../../components/loading";
+import { get } from "@/common/http";
 
 export default function LeftBar() {
   const { data, isLoading } = useSWR<Tag[]>("/api/tag", get);

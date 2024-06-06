@@ -26,4 +26,3 @@ pnpm prisma db push
 pnpm build
 pnpm start
 ```
-

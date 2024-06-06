@@ -8,9 +8,9 @@ const nextConfig = {
         pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'cdn.qiniu.bsxwerse.top',
-        pathname: '/**'
+        protocol: "https",
+        hostname: "cdn.qiniu.bsxwerse.top",
+        pathname: "/**",
       },
     ],
   },

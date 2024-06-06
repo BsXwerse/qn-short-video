@@ -1,9 +1,9 @@
 "use client";
 
+import { get } from "@/common/http";
 import Loading from "@/components/loading";
 import Modal from "@/components/modal";
 import VideoCard from "@/components/video-card";
-import { get } from "@/service/core";
 import { VideoItem } from "@/types/video";
 import { IconSearch } from "@tabler/icons-react";
 import { useDebouncedValue } from "foxact/use-debounced-value";

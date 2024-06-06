@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Header from "@/components/header";
-import RightBar from "@/components/rightbar";
-import LeftBar from "@/components/leftbar";
+import LeftBar from "@/app/(watch)/leftbar";
+import Header from "./header";
+import RightBar from "./rightbar";
 
 export const metadata: Metadata = {
   title: "Watch",

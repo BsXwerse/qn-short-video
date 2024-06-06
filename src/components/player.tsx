@@ -1,25 +1,19 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  Fragment,
-  useCallback,
-  MouseEvent,
-} from "react";
+import { useState, useEffect, useRef, Fragment, useCallback } from "react";
 import { Transition } from "@headlessui/react";
 import Video from "@/components/video";
-import { throttle } from "@/utils/fn";
+import { throttle } from "@/common/throttle";
 import Favorite from "@/components/favorite";
 import clsx from "clsx";
 import { VideoItem } from "@/types/video";
-import { get } from "@/actions/request";
 import { emitter } from "@/lib/mitt";
 import {
   IconArrowBigDownLineFilled,
   IconArrowBigUpLineFilled,
 } from "@tabler/icons-react";
+import useSWR from "swr";
+import { get } from "@/common/http";
 
 const PAGE_SIZE = 5;
 
@@ -28,8 +22,6 @@ export default function Player({ tag }: { tag?: string }) {
   const togleRef = useRef(togle);
   const mainRef = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState(true);
-  const [videoItems, setVideoItems] = useState<VideoItem[]>([]);
-  const videoRef = useRef<VideoItem[]>(videoItems);
   const [isPlay, setIsPaly] = useState(false);
   const isPlayRef = useRef(isPlay);
   const [isAuto, setAuto] = useState(false);
@@ -37,23 +29,30 @@ export default function Player({ tag }: { tag?: string }) {
   const A = useRef(0);
   const B = useRef(0);
 
+  const [current, setCurrent] = useState(0);
+
+  const { data: videoItems } = useSWR(
+    ["/api/video", current, tag],
+    ([url, pn, t]) =>
+      get(url, {
+        pageNum: pn,
+        pageSize: PAGE_SIZE,
+        tag: t ?? undefined,
+      }),
+  );
+
+  const videoRef = useRef<VideoItem[]>(videoItems);
+
+  useEffect(() => {
+    videoRef.current = videoItems;
+  }, [videoItems]);
+
   const changeUp = useCallback(async () => {
     if (cur.current % PAGE_SIZE === 0) {
       if (cur.current === 0) {
         return;
       }
-      const params = new URLSearchParams();
-      params.append("pageNum", "" + Math.floor((cur.current - 1) / PAGE_SIZE));
-      params.append("pageSize", "" + PAGE_SIZE);
-      if (tag) params.append("tag", tag);
-      const data = await get<VideoItem[]>("/api/video", params);
-      if (data.body) {
-        if (data.body.length === 0) {
-          return;
-        }
-        setVideoItems(data.body);
-        videoRef.current = data.body;
-      }
+      setCurrent(Math.floor((cur.current - 1) / PAGE_SIZE));
     }
     cur.current--;
     setDirection(false);
@@ -64,7 +63,7 @@ export default function Player({ tag }: { tag?: string }) {
     } else {
       B.current = cur.current % PAGE_SIZE;
     }
-  }, [tag]);
+  }, []);
 
   const changeDown = useCallback(async () => {
     if (videoRef.current.length === 0) return;
@@ -72,18 +71,7 @@ export default function Player({ tag }: { tag?: string }) {
       if (videoRef.current.length < PAGE_SIZE) {
         return;
       }
-      const params = new URLSearchParams();
-      params.append("pageNum", "" + (cur.current + 1) / PAGE_SIZE);
-      params.append("pageSize", "" + PAGE_SIZE);
-      if (tag) params.append("tag", tag);
-      const data = await get<VideoItem[]>("/api/video", params);
-      if (data.body) {
-        if (data.body.length === 0) {
-          return;
-        }
-        setVideoItems(data.body);
-        videoRef.current = data.body;
-      }
+      setCurrent((cur.current + 1) / PAGE_SIZE);
     }
     cur.current++;
     setDirection(true);
@@ -94,7 +82,7 @@ export default function Player({ tag }: { tag?: string }) {
     } else {
       B.current = cur.current % PAGE_SIZE;
     }
-  }, [tag]);
+  }, []);
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
@@ -138,24 +126,12 @@ export default function Player({ tag }: { tag?: string }) {
       mainRef.current?.addEventListener("pointerup", warpC);
       mainRef.current?.addEventListener("wheel", warpW);
       document.addEventListener("keydown", warpK);
-      const params = new URLSearchParams();
-      params.append("pageNum", "0");
-      params.append("pageSize", "" + PAGE_SIZE);
-      if (tag) params.append("tag", tag);
-      const f = async () => {
-        const data = await get<VideoItem[]>("/api/video", params);
-        if (data.body) {
-          setVideoItems(data.body);
-          videoRef.current = data.body;
-        }
-      };
-      f();
       return () => {
         mainRef.current?.removeEventListener("pointerup", warpC);
         mainRef.current?.removeEventListener("wheel", warpW);
         document.removeEventListener("keydown", warpK);
       };
-    }, [handleClick, handleKeyDown, handleWheel, tag]),
+    }, [handleClick, handleKeyDown, handleWheel]),
     [],
   );
 
@@ -163,7 +139,9 @@ export default function Player({ tag }: { tag?: string }) {
     <div className="h-screen relative overflow-hidden" ref={mainRef}>
       <Favorite
         videoId={
-          videoItems.length === 0 ? -1 : videoItems[cur.current % PAGE_SIZE].id
+          !videoItems || videoItems?.length === 0
+            ? -1
+            : videoItems?.[cur.current % PAGE_SIZE].id
         }
       />
       <div className="fixed right-5 top-28 flex lg:hidden flex-col items-center justify-center text-foreground/30 z-[200] gap-5">
@@ -200,7 +178,7 @@ export default function Player({ tag }: { tag?: string }) {
           },
         )}
       >
-        <Video item={videoItems[A.current]} isPlay={isPlay} isAuto={isAuto} />
+        <Video item={videoItems?.[A.current]} isPlay={isPlay} isAuto={isAuto} />
       </Transition>
       <Transition
         as={Fragment}
@@ -228,7 +206,7 @@ export default function Player({ tag }: { tag?: string }) {
           },
         )}
       >
-        <Video item={videoItems[B.current]} isPlay={isPlay} isAuto={isAuto} />
+        <Video item={videoItems?.[B.current]} isPlay={isPlay} isAuto={isAuto} />
       </Transition>
     </div>
   );

@@ -6,14 +6,13 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
-import { post } from "@/actions/request";
 import toast from "react-hot-toast";
 import { IconPlus, IconLoader2 } from "@tabler/icons-react";
 import { Tag } from "@prisma/client";
 import { uploadOSS } from "@/actions/oss-client";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
-import { get } from "@/service/core";
+import { get, post } from "@/common/http";
 
 interface FormElements extends HTMLFormControlsCollection {
   title: HTMLInputElement;
@@ -119,10 +118,8 @@ export default function Upload() {
     const dbPromise = new Promise(async (resolve, reject) => {
       try {
         await ossPromise;
-        const res = await post<undefined>("/api/video", dto);
-        if (res.code === 200) {
-          resolve("done");
-        }
+        await post("/api/video", dto);
+        resolve("done");
       } catch (err: any) {
         reject(err);
       }

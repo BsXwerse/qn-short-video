@@ -1,12 +1,12 @@
 "use client";
 
 import Loading from "@/components/loading";
-import { get } from "@/service/core";
 import { Video } from "@prisma/client";
 import Image from "next/image";
 import DefaultImg from "../../../public/imgs/default.png";
 import useSWR from "swr";
 import VideoCard from "@/components/video-card";
+import { get } from "@/common/http";
 
 type VideoWithUploader = Video & {
   uploder: {
