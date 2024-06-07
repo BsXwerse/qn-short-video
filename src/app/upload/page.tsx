@@ -23,7 +23,6 @@ type FormValues = {
   introduction: string;
   cover: FileList;
   video: FileList;
-  uploaderId: string;
 };
 
 export default function Upload() {

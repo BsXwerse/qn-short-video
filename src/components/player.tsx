@@ -7,13 +7,13 @@ import { throttle } from "@/common/throttle";
 import Favorite from "@/components/favorite";
 import clsx from "clsx";
 import { VideoItem } from "@/types/video";
-import { emitter } from "@/lib/mitt";
 import {
   IconArrowBigDownLineFilled,
   IconArrowBigUpLineFilled,
 } from "@tabler/icons-react";
 import useSWR from "swr";
 import { get } from "@/common/http";
+import { useAutoplayValue } from "./providers";
 
 const PAGE_SIZE = 5;
 
@@ -24,7 +24,7 @@ export default function Player({ tag }: { tag?: string }) {
   const [direction, setDirection] = useState(true);
   const [isPlay, setIsPaly] = useState(false);
   const isPlayRef = useRef(isPlay);
-  const [isAuto, setAuto] = useState(false);
+  const isAuto = useAutoplayValue();
   const cur = useRef(0);
   const A = useRef(0);
   const B = useRef(0);
@@ -119,7 +119,6 @@ export default function Player({ tag }: { tag?: string }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(
     useCallback(() => {
-      emitter.on("autoplay", (x: any) => setAuto(x));
       const warpW = throttle(handleWheel, 600);
       const warpC = throttle(handleClick, 600);
       const warpK = throttle(handleKeyDown, 600);

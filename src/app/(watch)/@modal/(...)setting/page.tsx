@@ -6,14 +6,15 @@ import {
   IconMoon,
   IconCarouselVertical,
 } from "@tabler/icons-react";
-import { emitter } from "@/lib/mitt";
 import { useRouter } from "next/navigation";
+import { useSetAutoplay } from "@/components/providers";
 
 let isAuto = false;
 let isDark = true;
 
 export default function Setting() {
   const router = useRouter();
+  const setAutoplay = useSetAutoplay();
 
   const togleDark = () => {
     const html = document.querySelector("html");
@@ -25,7 +26,7 @@ export default function Setting() {
 
   const togleAuto = () => {
     isAuto = !isAuto;
-    emitter.emit("autoplay", isAuto);
+    setAutoplay(isAuto);
     router.back();
   };
 

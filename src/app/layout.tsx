@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import Providers from "@/components/provider";
+import Providers from "@/components/providers";
 import { Toaster } from "react-hot-toast";
 import { Metadata } from "next";
 
