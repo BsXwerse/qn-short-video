@@ -1,25 +1,18 @@
 "use client";
 
 import Loading from "@/components/loading";
-import { Video } from "@prisma/client";
 import Image from "next/image";
 import DefaultImg from "../../../public/imgs/default.png";
 import useSWR from "swr";
 import VideoCard from "@/components/video-card";
 import { get } from "@/common/http";
-
-type VideoWithUploader = Video & {
-  uploder: {
-    image: string | null;
-    name: string | null;
-  };
-};
+import { VideoItem } from "@/types/video";
 
 export default function VideoList({ id }: { id: string }) {
   const { data: videos, isLoading } = useSWR(
     ["/api/favorite/all", id],
     ([url, id]) =>
-      get<VideoWithUploader[]>(url, {
+      get<VideoItem[]>(url, {
         id,
       }),
   );

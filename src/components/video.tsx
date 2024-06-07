@@ -1,62 +1,62 @@
 import { VideoItem } from "@/types/video";
-import { Transition } from "@headlessui/react";
-import {
-  forwardRef,
-  useState,
-  Fragment,
-  useRef,
-  useEffect,
-  MouseEvent,
-} from "react";
+import { useState, useEffect } from "react";
 import VideoInfo from "./video-info";
 import DefaultCover from "../../public/imgs/default.png";
 import Image from "next/image";
 import clsx from "clsx";
+import Favorite from "./favorite";
 
-const Video = forwardRef<
-  HTMLDivElement,
-  { item: VideoItem; isPlay: boolean; isAuto: boolean }
->(({ item, isPlay, isAuto }, ref) => {
-  const [open, setOpen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+export default function Video({
+  item,
+  isAutoplay = false,
+}: {
+  item: VideoItem;
+  isAutoplay: boolean;
+}) {
+  const videoId = `${item.id}-${item.url ?? ""}`;
+  const [showInfo, setShowInfo] = useState(!isAutoplay);
+  const [showVideo, setShowVideo] = useState(isAutoplay);
 
   useEffect(() => {
-    setOpen(isAuto);
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setOpen(false);
+        setShowVideo(false);
+        setShowInfo(true);
+        (document.getElementById(videoId) as any)?.pause();
       }
     };
     document.addEventListener("keydown", handleEsc);
     return () => {
       document.removeEventListener("keydown", handleEsc);
     };
-  }, [isAuto]);
-
-  useEffect(() => {
-    if (isPlay) {
-      videoRef.current?.play();
-    }
-  }, [isPlay]);
+  }, [videoId]);
 
   return (
-    <div ref={ref} className="absolute inset-0">
-      <VideoInfo item={item} isShow={!isPlay} />
-      <div className="flex justify-center items-center absolute inset-0 m-auto">
-        <Image
-          src={item ? (item.coverUrl as string) : DefaultCover}
-          alt="video cover"
-          className="h-full object-contain"
-          width={1000}
-          height={1000}
-        />
-        {item && (
+    <div className="absolute inset-0 ">
+      <VideoInfo item={item} isShow={showInfo} />
+      <Favorite videoId={item.id} />
+      {!showVideo && (
+        <>
+          <Image
+            src={item ? (item.coverUrl as string) : DefaultCover}
+            alt="video cover"
+            className="h-full object-contain absolute z-20"
+            width={1000}
+            height={1000}
+          />
           <button
-            className={clsx("absolute rounded-full shadow z-[110]", {
-              ["hidden"]: open,
-              ["inline"]: !open,
-            })}
-            onClick={() => setOpen(true)}
+            className={clsx(
+              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow z-40",
+              {
+                ["hidden"]: showVideo,
+                ["inline"]: !showVideo,
+              },
+            )}
+            onClick={() => {
+              setShowVideo(true);
+              setShowInfo(false);
+              (document.getElementById(videoId) as any)?.play();
+            }}
           >
             <svg
               className="w-16 h-16 sm:w-20 sm:h-20 hover:opacity-75 transition duration-150 ease-in-out"
@@ -82,43 +82,20 @@ const Video = forwardRef<
               />
             </svg>
           </button>
-        )}
-      </div>
-      <Transition
-        show={open}
-        className="fixed inset-0 bg-background transition-opacity z-[80]"
-        enter="transition ease-out duration-200"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition ease-out duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      />
-      <Transition
-        show={open}
-        as={Fragment}
-        enter="transition-opacity duration-500"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        afterEnter={() => videoRef.current?.play()}
+        </>
+      )}
+      <video
+        id={videoId}
+        autoPlay={isAutoplay}
+        className={clsx("absolute inset-0 m-auto h-full z-10 rounded", {
+          ["visible"]: showVideo,
+          ["invisible"]: !showVideo,
+        })}
+        controls
       >
-        <video
-          ref={videoRef}
-          className="absolute inset-0 m-auto h-full z-[90] rounded"
-          loop
-          controls
-        >
-          <source src={item ? (item.url as string) : ""} />
-          Your browser does not support the video tag.
-        </video>
-      </Transition>
+        <source src={item ? (item.url as string) : ""} />
+        Your browser does not support the video tag.
+      </video>
     </div>
   );
-});
-
-Video.displayName = "video-comp";
-
-export default Video;
+}
