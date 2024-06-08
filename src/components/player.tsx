@@ -1,11 +1,10 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import Video from "@/components/video";
 import { VideoItem } from "@/types/video";
 import useSWRInfinite from "swr/infinite";
 import { get } from "@/common/http";
-import { useAutoplayValue } from "./providers";
 import { motion } from "framer-motion";
 import { Virtuoso } from "react-virtuoso";
 import qs from "qs";
@@ -13,8 +12,6 @@ import qs from "qs";
 const PAGE_SIZE = 5;
 
 export default function Player({ tag }: { tag?: string }) {
-  const isAuto = useAutoplayValue();
-
   const getKey = useCallback(
     (pageIndex: number, previousPageData: VideoItem[]) => {
       if (previousPageData && previousPageData.length <= 0) return null;
@@ -37,6 +34,13 @@ export default function Player({ tag }: { tag?: string }) {
   );
 
   const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>);
+
+  //disable space key scroll
+  useEffect(() => {
+    const f = (e: KeyboardEvent) => e.key === " " && e.preventDefault();
+    document.addEventListener("keydown", f);
+    return () => document.removeEventListener("keydown", f);
+  }, []);
 
   const videoList = useMemo(() => {
     const list: VideoItem[] = [];
@@ -65,7 +69,7 @@ export default function Player({ tag }: { tag?: string }) {
                 }}
                 className="h-full"
               >
-                <Video item={data} isAutoplay={isAuto} />
+                <Video item={data} />
               </motion.div>
             </div>
             <div className="h-[50px]" />

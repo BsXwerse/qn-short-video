@@ -1,19 +1,15 @@
 import { VideoItem } from "@/types/video";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useId } from "react";
 import VideoInfo from "./video-info";
 import DefaultCover from "../../public/imgs/default.png";
 import Image from "next/image";
 import clsx from "clsx";
 import { IconAlignBoxLeftBottom } from "@tabler/icons-react";
+import { useAutoplayValue } from "./providers";
 
-export default function Video({
-  item,
-  isAutoplay = false,
-}: {
-  item: VideoItem;
-  isAutoplay: boolean;
-}) {
-  const videoId = `${item.id}-${item.url ?? ""}`;
+export default function Video({ item }: { item: VideoItem }) {
+  const isAutoplay = useAutoplayValue();
+  const videoId = useId();
   const [showInfo, setShowInfo] = useState(!isAutoplay);
   const [showVideo, setShowVideo] = useState(isAutoplay);
   const observer = useRef<IntersectionObserver | null>(null);
@@ -24,14 +20,25 @@ export default function Video({
     (document.getElementById(videoId) as any)?.pause();
   }, [videoId]);
 
+  const startPlay = useCallback(() => {
+    setShowVideo(true);
+    setShowInfo(false);
+    (document.getElementById(videoId) as any)?.play();
+  }, [videoId]);
+
   useEffect(() => {
     observer.current?.disconnect();
     observer.current = new IntersectionObserver(
-      (entries) => !entries[0]?.isIntersecting && stopPlay(),
+      (entries) =>
+        !entries[0]?.isIntersecting ? stopPlay() : isAutoplay && startPlay(),
       { rootMargin: "-100px" },
     );
     return () => observer.current?.disconnect();
-  }, [stopPlay]);
+  }, [isAutoplay, startPlay, stopPlay]);
+
+  useEffect(() => {
+    isAutoplay ? startPlay() : stopPlay();
+  }, [isAutoplay, startPlay, stopPlay]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => e.key === "Escape" && stopPlay();

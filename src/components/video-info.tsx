@@ -68,7 +68,7 @@ export default function VideoInfo({
         className="absolute h-full w-full z-30 text-foreground flex flex-col justify-between"
       >
         <Transition.Child
-          className="absolute h-full w-full bg-gradient-to-b from-black/50 to-60% mt-10"
+          className="absolute h-full w-full bg-gradient-to-b from-black/50 to-60% mt-10 -translate-y-12"
           enter="transition ease-out duration-150"
           enterFrom="opacity-0 -translate-y-40"
           enterTo="opacity-100 translate-y-0"

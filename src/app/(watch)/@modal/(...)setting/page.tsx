@@ -8,27 +8,36 @@ import {
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useSetAutoplay } from "@/components/providers";
+import { useCallback, useEffect } from "react";
 
-let isAuto = false;
-let isDark = true;
+const AUTOPLAY_KEY = "autoplay";
+const DARK_MODE_KEY = "dark-mode";
 
+//TODO next theme
 export default function Setting() {
   const router = useRouter();
   const setAutoplay = useSetAutoplay();
+  const isDark = localStorage.getItem(DARK_MODE_KEY) === "true";
+  const isAuto = localStorage.getItem(AUTOPLAY_KEY) === "true";
 
-  const togleDark = () => {
+  const togleDark = useCallback(() => {
     const html = document.querySelector("html");
-    if (html) {
-      isDark = html.classList.toggle("dark");
-    }
+    if (!html) return;
+    const isDark = html.classList.toggle("dark");
+    isDark
+      ? localStorage.setItem(DARK_MODE_KEY, "true")
+      : localStorage.setItem(DARK_MODE_KEY, "false");
     router.back();
-  };
+  }, [router]);
 
-  const togleAuto = () => {
-    isAuto = !isAuto;
-    setAutoplay(isAuto);
+  const togleAuto = useCallback(() => {
+    const v = localStorage.getItem(AUTOPLAY_KEY);
+    v === "true"
+      ? localStorage.setItem(AUTOPLAY_KEY, "false")
+      : localStorage.setItem(AUTOPLAY_KEY, "true");
+    setAutoplay(localStorage.getItem(AUTOPLAY_KEY) === "true");
     router.back();
-  };
+  }, [router, setAutoplay]);
 
   return (
     <Modal>
