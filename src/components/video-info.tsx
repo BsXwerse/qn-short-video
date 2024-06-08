@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { get, post } from "@/common/http";
+import Favorite from "./favorite";
 
 export default function VideoInfo({
   item,
@@ -18,7 +19,7 @@ export default function VideoInfo({
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const { data: isFollowed, mutate } = useSWR(
+  const { data: isFollowed, mutate: mutateFollow } = useSWR(
     ["/api/user/follow", session?.user.id ?? "", item?.uploderId ?? ""],
     ([url, userId, uploaderId]) =>
       get<boolean>(url, {
@@ -35,9 +36,30 @@ export default function VideoInfo({
         post("/api/user/follow", {
           userId: session.user.id,
           uploaderId: item?.uploderId,
-        }).then(() => mutate());
+        }).then(() => mutateFollow());
     }
-  }, [item?.uploderId, mutate, router, session, status]);
+  }, [item?.uploderId, mutateFollow, router, session, status]);
+
+  const { data: isFavorited, mutate: mutateFavorite } = useSWR(
+    ["/api/user/favorite", session?.user.id ?? "", item.id],
+    ([url, userId, videoId]) =>
+      get<boolean>(url, {
+        userId,
+        videoId,
+      }),
+  );
+
+  const clickFavorite = useCallback(() => {
+    if (status === "unauthenticated") {
+      router.push("/api/auth/signin");
+    } else {
+      session &&
+        post("/api/user/favorite", {
+          userId: session.user.id,
+          videoId: item.id,
+        }).then(() => mutateFavorite());
+    }
+  }, [item.id, mutateFavorite, router, session, status]);
 
   return (
     item && (
@@ -76,6 +98,7 @@ export default function VideoInfo({
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 translate-y-40"
         >
+          <Favorite isFavorited={!!isFavorited} handleClick={clickFavorite} />
           <h2 className="font-semibold text-lg truncate max-lg:max-w-[250px] drop-shadow ">
             {item.title}
           </h2>

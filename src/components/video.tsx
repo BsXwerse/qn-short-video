@@ -1,10 +1,10 @@
 import { VideoItem } from "@/types/video";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import VideoInfo from "./video-info";
 import DefaultCover from "../../public/imgs/default.png";
 import Image from "next/image";
-import Favorite from "./favorite";
 import clsx from "clsx";
+import { IconAlignBoxLeftBottom } from "@tabler/icons-react";
 
 export default function Video({
   item,
@@ -16,25 +16,36 @@ export default function Video({
   const videoId = `${item.id}-${item.url ?? ""}`;
   const [showInfo, setShowInfo] = useState(!isAutoplay);
   const [showVideo, setShowVideo] = useState(isAutoplay);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const stopPlay = useCallback(() => {
+    setShowVideo(false);
+    setShowInfo(true);
+    (document.getElementById(videoId) as any)?.pause();
+  }, [videoId]);
 
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setShowVideo(false);
-        setShowInfo(true);
-        (document.getElementById(videoId) as any)?.pause();
-      }
-    };
+    observer.current?.disconnect();
+    observer.current = new IntersectionObserver(
+      (entries) => !entries[0]?.isIntersecting && stopPlay(),
+      { rootMargin: "-100px" },
+    );
+    return () => observer.current?.disconnect();
+  }, [stopPlay]);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => e.key === "Escape" && stopPlay();
     document.addEventListener("keydown", handleEsc);
-    return () => {
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, [videoId]);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [stopPlay, videoId]);
 
   return (
     <div className="absolute inset-0 ">
       <VideoInfo item={item} isShow={showInfo} />
-      <Favorite videoId={item.id} />
+      <IconAlignBoxLeftBottom
+        onClick={() => setShowInfo((pre) => !pre)}
+        className=" absolute right-1 bottom-52 text-foreground z-50 cursor-pointer"
+      />
       {!showVideo && (
         <>
           <Image
@@ -81,6 +92,13 @@ export default function Video({
       <video
         id={videoId}
         autoPlay={isAutoplay}
+        ref={useCallback(
+          (el: HTMLVideoElement | null) => {
+            el && observer.current?.observe(el);
+          },
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          [observer.current],
+        )}
         className={clsx("absolute inset-0 m-auto h-full z-10 rounded", {
           ["visible"]: showVideo,
           ["invisible"]: !showVideo,
