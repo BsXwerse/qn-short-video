@@ -50,22 +50,25 @@ export default function Player({ tag }: { tag?: string }) {
         className="snap-y snap-mandatory"
         data={videoList}
         endReached={() => setSize((pre) => pre + 1)}
-        itemContent={(idx, data) => (
+        overscan={2000}
+        itemContent={(_, data) => (
           <>
-            {idx === 0 && <div className="h-[100px]" />}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ margin: "-300px 0px" }}
-              transition={{
-                ease: "easeIn",
-                duration: 0.2,
-              }}
-              className="h-[95vh] snap-center snap-always relative"
-            >
-              <Video item={data} isAutoplay={isAuto} />
-            </motion.div>
-            {idx === videoList.length - 1 && <div className="h-[100px]" />}
+            <div className="h-[50px]" />
+            <div className="h-screen snap-center snap-always relative">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ margin: "-300px 0px" }}
+                transition={{
+                  ease: "easeIn",
+                  duration: 0.2,
+                }}
+                className="h-full"
+              >
+                <Video item={data} isAutoplay={isAuto} />
+              </motion.div>
+            </div>
+            <div className="h-[50px]" />
           </>
         )}
       />

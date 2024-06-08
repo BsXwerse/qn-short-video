@@ -18,6 +18,10 @@
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
   }
+
+  .absolute-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
 }
 
 @layer base {

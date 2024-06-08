@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import VideoInfo from "./video-info";
 import DefaultCover from "../../public/imgs/default.png";
 import Image from "next/image";
-import clsx from "clsx";
 import Favorite from "./favorite";
+import clsx from "clsx";
 
 export default function Video({
   item,
@@ -45,13 +45,7 @@ export default function Video({
             height={1000}
           />
           <button
-            className={clsx(
-              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow z-40",
-              {
-                ["hidden"]: showVideo,
-                ["inline"]: !showVideo,
-              },
-            )}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow z-40"
             onClick={() => {
               setShowVideo(true);
               setShowInfo(false);
@@ -92,6 +86,7 @@ export default function Video({
           ["invisible"]: !showVideo,
         })}
         controls
+        preload="metadata"
       >
         <source src={item ? (item.url as string) : ""} />
         Your browser does not support the video tag.
