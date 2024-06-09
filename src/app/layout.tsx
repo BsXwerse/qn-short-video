@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import Providers from "@/components/providers";
 import { Toaster } from "react-hot-toast";
 import { Metadata } from "next";
+import SWRProvider from "@/components/swr-provider";
+import { getAllTags } from "@/actions/tag";
 
 export const metadata: Metadata = {
   title: {
@@ -12,16 +14,19 @@ export const metadata: Metadata = {
   description: "short video application by nextjs, nextAuth, prisma, etc.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const preTagsData = await getAllTags();
   return (
     <html lang="en">
       <body>
         <Toaster />
-        <Providers>{children}</Providers>
+        <SWRProvider tagsData={preTagsData}>
+          <Providers>{children}</Providers>
+        </SWRProvider>
       </body>
     </html>
   );

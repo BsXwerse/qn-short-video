@@ -9,6 +9,7 @@ import { Tag } from "@prisma/client";
 import useSWR from "swr";
 import { get } from "@/common/http";
 
+//TODO ssg
 export default function MobileTag() {
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);

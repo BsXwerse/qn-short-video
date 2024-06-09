@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Video from "@/components/video";
 import { VideoItem } from "@/types/video";
 import useSWRInfinite from "swr/infinite";
@@ -41,13 +41,6 @@ export default function Player({
   const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>, {
     fallbackData: preData ? [preData] : undefined,
   });
-
-  //disable space key scroll
-  useEffect(() => {
-    const f = (e: KeyboardEvent) => e.key === " " && e.preventDefault();
-    document.addEventListener("keydown", f);
-    return () => document.removeEventListener("keydown", f);
-  }, []);
 
   const videoList = useMemo(() => {
     const list: VideoItem[] = [];

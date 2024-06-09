@@ -6,10 +6,8 @@ import useSWR from "swr";
 import Loading from "../../components/loading";
 import { get } from "@/common/http";
 
-export default function LeftBar({ preData }: { preData?: Tag[] }) {
-  const { data } = useSWR<Tag[]>("/api/tag", get, {
-    fallbackData: preData,
-  });
+export default function LeftBar() {
+  const { data } = useSWR<Tag[]>("/api/tag", get);
 
   return (
     <>
