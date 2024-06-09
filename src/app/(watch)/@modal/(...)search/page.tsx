@@ -5,7 +5,6 @@ import Loading from "@/components/loading";
 import Modal from "@/components/modal";
 import VideoCard from "@/components/video-card";
 import { VideoItem } from "@/types/video";
-import { IconSearch } from "@tabler/icons-react";
 import { useDebouncedValue } from "foxact/use-debounced-value";
 import { useState } from "react";
 import useSWR from "swr";
@@ -34,7 +33,7 @@ export default function Search() {
             setSearch(e.target.value);
           }}
         />
-        <IconSearch />
+        <div className="i-tabler-search text-2xl" />
       </div>
       <div className="max-w-2xl my-10 flex flex-col gap-4 max-h-[70vh] lg:max-h-[70vh] overflow-auto mx-5">
         {isLoading ? (

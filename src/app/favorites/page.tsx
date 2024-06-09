@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth";
-import { IconHome } from "@tabler/icons-react";
 import Link from "next/link";
 import VideoList from "./video-list";
 import { getFavorites } from "@/actions/video";
@@ -31,7 +30,7 @@ export default async function Favorite() {
         href="/"
         className="fixed right-10 bottom-10 lg:right-20 lg:bottom-20 text-foreground"
       >
-        <IconHome className="h-8 w-8" />
+        <div className="i-tabler-home text-3xl" />
       </Link>
     </>
   );

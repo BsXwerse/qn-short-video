@@ -1,11 +1,6 @@
 "use client";
 
 import Modal from "@/components/modal";
-import {
-  IconBrightnessUp,
-  IconMoon,
-  IconCarouselVertical,
-} from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useSetAutoplay } from "@/components/providers";
 import { useCallback } from "react";
@@ -43,11 +38,11 @@ export default function Setting() {
         >
           {isDark ? (
             <span className="flex items-center gap-2">
-              <IconBrightnessUp /> Light Mode
+              <div className="i-tabler-brightness-up text-3xl" /> Light Mode
             </span>
           ) : (
             <span className="flex items-center gap-2">
-              <IconMoon /> Dark Mode
+              <div className="i-tabler-moon text-2xl" /> Dark Mode
             </span>
           )}
         </p>
@@ -55,7 +50,8 @@ export default function Setting() {
           className="hover:bg-muted p-2 rounded-md hover:cursor-pointer flex items-center gap-2"
           onClick={togleAuto}
         >
-          <IconCarouselVertical /> {isAuto ? "Auto Play Off" : "Auto Play On"}
+          <div className="i-tabler-carousel-vertical text-2xl" />
+          {isAuto ? "Auto Play Off" : "Auto Play On"}
         </p>
       </div>
     </Modal>

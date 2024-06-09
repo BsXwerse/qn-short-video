@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import toast from "react-hot-toast";
-import { IconPlus, IconLoader2 } from "@tabler/icons-react";
 import { Tag } from "@prisma/client";
 import { uploadOSS } from "@/actions/oss-client";
 import { v4 as uuidv4 } from "uuid";
@@ -52,7 +51,7 @@ export default function Upload() {
   if (status === "loading") {
     return (
       <div className="w-screen h-screen flex items-center justify-center text-2xl text-foreground">
-        <IconLoader2 className=" animate-spin" />
+        <div className="i-tabler-loader2 text-2xl animate-spin" />
       </div>
     );
   }
@@ -209,7 +208,7 @@ export default function Upload() {
                   }}
                   className="text-foreground align-middle"
                 >
-                  <IconPlus />
+                  <div className="i-tabler-plus text-2xl" />
                 </button>
               </div>
               <div className="flex gap-2 flex-wrap py-5 text-foreground border-[1px] border-muted-foreground rounded-lg my-5 px-5 min-w-[100px] min-h-[50px]">

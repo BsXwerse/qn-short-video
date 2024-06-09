@@ -3,15 +3,6 @@
 import Link from "next/link";
 import { Popover, Transition } from "@headlessui/react";
 import { usePopper } from "react-popper";
-import {
-  IconMenu,
-  IconHeart,
-  IconSettings,
-  IconUpload,
-  IconSearch,
-  IconHome,
-  IconUserPlus,
-} from "@tabler/icons-react";
 import { useState, Fragment } from "react";
 
 export default function MobileNav() {
@@ -34,7 +25,7 @@ export default function MobileNav() {
   return (
     <Popover>
       <Popover.Button ref={setReferenceElement}>
-        <IconMenu />
+        <div className="i-tabler-menu text-2xl" />
       </Popover.Button>
       <Transition
         as={Fragment}
@@ -53,37 +44,37 @@ export default function MobileNav() {
         >
           <Link href="/">
             <div className=" px-5 py-3 inline-flex gap-2 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150 ">
-              <IconHome />
+              <div className="i-tabler-home text-2xl" />
               home
             </div>
           </Link>
           <Link href="/search">
             <div className=" px-5 py-3 inline-flex gap-2  rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-              <IconSearch />
+              <div className="i-tabler-search text-2xl" />
               <span>search</span>
             </div>
           </Link>
           <Link href="/follow">
             <div className=" px-5 py-3 inline-flex gap-2  rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-              <IconUserPlus />
+              <div className="i-tabler-user-plus text-2xl" />
               <span>follow</span>
             </div>
           </Link>
           <Link href="/favorites">
             <div className=" px-5 py-3 inline-flex gap-2  rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-              <IconHeart />
+              <div className="i-tabler-heart text-2xl" />
               <span>favorites</span>
             </div>
           </Link>
           <Link href="/upload">
             <div className=" px-5 py-3 inline-flex gap-2  rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-              <IconUpload />
+              <div className="i-tabler-upload text-2xl" />
               <span>upload</span>
             </div>
           </Link>
           <Link href="/setting">
             <div className=" px-5 py-3 inline-flex gap-2 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-              <IconSettings />
+              <div className="i-tabler-settings text-2xl" />
               <span>setting</span>
             </div>
           </Link>

@@ -1,11 +1,4 @@
 import Link from "next/link";
-import {
-  IconHeart,
-  IconSettings,
-  IconUpload,
-  IconSearch,
-  IconUserPlus,
-} from "@tabler/icons-react";
 import LoginBar from "./loginbar";
 
 export default async function RightBar() {
@@ -37,31 +30,31 @@ export default async function RightBar() {
         <hr className=" border-foreground/30" />
         <Link href="/search">
           <div className=" px-5 inline-flex gap-2  h-14 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-            <IconSearch />
+            <div className="i-tabler-search text-2xl" />
             <span>search</span>
           </div>
         </Link>
         <Link href="/follow">
           <div className=" px-5 inline-flex gap-2  h-14 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-            <IconUserPlus />
+            <div className="i-tabler-user-plus text-2xl" />
             <span>follow</span>
           </div>
         </Link>
         <Link href="/favorites">
           <div className=" px-5 inline-flex gap-2  h-14 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-            <IconHeart />
+            <div className="i-tabler-heart text-2xl" />
             <span>favorites</span>
           </div>
         </Link>
         <Link href="/setting">
           <div className=" px-5 inline-flex gap-2  h-14 rounded-full items-center  hover:bg-foreground/10 transition-colors duration-150">
-            <IconSettings />
+            <div className="i-tabler-settings text-2xl" />
             <span>setting</span>
           </div>
         </Link>
         <Link href="/upload">
           <div className="px-5 inline-flex gap-2  h-14 rounded-full items-center bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150 text-white">
-            <IconUpload />
+            <div className="i-tabler-upload text-2xl" />
             <span>upload</span>
           </div>
         </Link>

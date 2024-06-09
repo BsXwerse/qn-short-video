@@ -4,7 +4,6 @@ import VideoInfo from "./video-info";
 import DefaultCover from "../../public/imgs/default.png";
 import Image from "next/image";
 import clsx from "clsx";
-import { IconAlignBoxLeftBottom } from "@tabler/icons-react";
 import { useAutoplayValue } from "./providers";
 
 export default function Video({ item }: { item: VideoItem }) {
@@ -49,9 +48,9 @@ export default function Video({ item }: { item: VideoItem }) {
   return (
     <div className="absolute inset-0 ">
       <VideoInfo item={item} isShow={showInfo} />
-      <IconAlignBoxLeftBottom
+      <div
         onClick={() => setShowInfo((pre) => !pre)}
-        className=" absolute right-1 bottom-52 text-foreground z-50 cursor-pointer"
+        className=" absolute right-1 bottom-52 text-foreground z-50 cursor-pointer i-tabler-align-box-left-bottom text-2xl"
       />
       {!showVideo && (
         <>

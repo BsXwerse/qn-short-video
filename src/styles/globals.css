@@ -1,48 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "@unocss/reset/tailwind.css";
+@unocss all;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-  }
-
-  .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-  }
-
-
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
 }
 
-@layer base {
-  body {
-    @apply bg-background;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+.dark {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 98%;
 
-    a:focus,
-    input:focus,
-    p:focus,
-    div:focus {
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+}
 
-    @apply transition-colors duration-300;
-  }
+body {
+  @apply bg-background transition-colors duration-300;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 
-  ::-webkit-scrollbar {
-    width: 0;
-  }
+::-webkit-scrollbar {
+  width: 0;
+}
 
-  .absolute-center {
-    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
-  }
+.absolute-center {
+  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+}
 
+a:focus,
+input:focus,
+p:focus,
+div:focus {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

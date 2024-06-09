@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Popover, Transition } from "@headlessui/react";
 import { usePopper } from "react-popper";
-import { IconCategory } from "@tabler/icons-react";
 import { useState, Fragment, useEffect } from "react";
 import { Tag } from "@prisma/client";
 import useSWR from "swr";
@@ -33,7 +32,7 @@ export default function MobileTag() {
   return (
     <Popover>
       <Popover.Button ref={setReferenceElement}>
-        <IconCategory />
+        <div className="i-tabler-category text-2xl" />
       </Popover.Button>
       <Transition
         as={Fragment}
