@@ -2,6 +2,8 @@ import Modal from "@/components/modal";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 import FollowList from "./follow-list";
+import { SWRConfig } from "swr";
+import { getAll } from "@/actions/follow";
 
 export default async function Follow() {
   const session = await auth();
@@ -19,10 +21,12 @@ export default async function Follow() {
     );
   }
 
+  const items = await getAll(session.user.id);
+
   return (
     <Modal>
       <div className="max-w-xl max-h-[90vh] w-full h-auto border-[1px] border-muted-foreground bg-background rounded-lg mx-4 p-6 text-foreground  overflow-auto divide-y divide-muted">
-        <FollowList id={session.user.id ?? ""} />
+        <FollowList id={session.user.id ?? ""} preData={items} />
       </div>
     </Modal>
   );

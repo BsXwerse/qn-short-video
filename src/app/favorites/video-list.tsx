@@ -8,18 +8,25 @@ import VideoCard from "@/components/video-card";
 import { get } from "@/common/http";
 import { VideoItem } from "@/types/video";
 
-export default function VideoList({ id }: { id: string }) {
-  const { data: videos, isLoading } = useSWR(
+export default function VideoList({
+  id,
+  preData,
+}: {
+  id: string;
+  preData?: VideoItem[];
+}) {
+  const { data: videos } = useSWR(
     ["/api/favorite/all", id],
     ([url, id]) =>
       get<VideoItem[]>(url, {
         id,
       }),
+    { fallbackData: preData },
   );
 
   return (
     <>
-      {isLoading ? (
+      {!videos ? (
         <Loading />
       ) : videos && videos.length > 0 ? (
         videos.map((x) => (

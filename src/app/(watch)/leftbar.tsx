@@ -6,15 +6,17 @@ import useSWR from "swr";
 import Loading from "../../components/loading";
 import { get } from "@/common/http";
 
-export default function LeftBar() {
-  const { data, isLoading } = useSWR<Tag[]>("/api/tag", get);
+export default function LeftBar({ preData }: { preData?: Tag[] }) {
+  const { data } = useSWR<Tag[]>("/api/tag", get, {
+    fallbackData: preData,
+  });
 
   return (
     <>
       <header className="hidden lg:flex items-center justify-center fixed w-[259px] h-14 bg-background text-foreground font-semibold text-lg shadow">
         Video Tag
       </header>
-      {isLoading ? (
+      {!data ? (
         <Loading />
       ) : (
         <div className="hidden h-screen left-0 w-60 shrink-0 ml-5 border-r-[1px] border-foreground/30 lg:flex flex-col gap-2 px-8 py-14 text-foreground overflow-auto">

@@ -6,18 +6,27 @@ import useSWR from "swr";
 import Image from "next/image";
 import { get } from "@/common/http";
 
-export default function FollowList({ id }: { id: string }) {
-  const { data: follows, isLoading } = useSWR(
+export default function FollowList({
+  id,
+  preData,
+}: {
+  id: string;
+  preData?: User[];
+}) {
+  const { data: follows } = useSWR(
     ["api/user/myfollow", id],
     ([url, id]) =>
       get<User[]>(url, {
         id,
       }),
+    {
+      fallbackData: preData,
+    },
   );
 
   return (
     <>
-      {isLoading ? (
+      {!follows ? (
         <Loading />
       ) : (
         follows?.map((x) => (

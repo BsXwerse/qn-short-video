@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { IconHome } from "@tabler/icons-react";
 import Link from "next/link";
 import VideoList from "./video-list";
+import { getFavorites } from "@/actions/video";
 
 export default async function Favorite() {
   const session = await auth();
@@ -19,10 +20,12 @@ export default async function Favorite() {
     );
   }
 
+  const preData = await getFavorites(session.user.id);
+
   return (
     <>
       <div className="text-foreground mx-auto max-w-3xl space-y-10 p-10">
-        <VideoList id={session.user.id} />
+        <VideoList id={session.user.id} preData={preData} />
       </div>
       <Link
         href="/"

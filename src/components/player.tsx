@@ -8,10 +8,15 @@ import { get } from "@/common/http";
 import { motion } from "framer-motion";
 import { Virtuoso } from "react-virtuoso";
 import qs from "qs";
+import { PAGE_SIZE } from "@/common/constants";
 
-const PAGE_SIZE = 5;
-
-export default function Player({ tag }: { tag?: string }) {
+export default function Player({
+  tag,
+  preData,
+}: {
+  tag?: string;
+  preData?: VideoItem[];
+}) {
   const getKey = useCallback(
     (pageIndex: number, previousPageData: VideoItem[]) => {
       if (previousPageData && previousPageData.length <= 0) return null;
@@ -33,7 +38,9 @@ export default function Player({ tag }: { tag?: string }) {
     [tag],
   );
 
-  const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>);
+  const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>, {
+    fallbackData: preData ? [preData] : undefined,
+  });
 
   //disable space key scroll
   useEffect(() => {
