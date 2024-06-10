@@ -8,10 +8,6 @@
 
 https://qn-short-video.vercel.app/
 
-#### 运行视频
-
-[demo video](./demo-video.mp4)
-
 #### 设计文档
 
 [doc](./docs/架构设计文档.md)
