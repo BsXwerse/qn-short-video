@@ -1,33 +1,33 @@
-import type { Metadata } from "next";
-import LeftBar from "@/app/(watch)/leftbar";
-import Header from "./header";
-import RightBar from "./rightbar";
+import LeftBar from '@/app/(watch)/leftbar';
+import type { Metadata } from 'next';
+import Header from './header';
+import RightBar from './rightbar';
 
 export const metadata: Metadata = {
-  title: "Watch",
-  description:
-    "Video playback home page, you can use the mouse wheel or up and down keys to switch videos",
-  keywords: ["static site generation, son!"],
+	title: 'Watch',
+	description:
+		'Video playback home page, you can use the mouse wheel or up and down keys to switch videos',
+	keywords: ['static site generation, son!'],
 };
 
 export default async function Layout({
-  children,
-  modal,
+	children,
+	modal,
 }: {
-  children: React.ReactNode;
-  modal: React.ReactNode;
+	children: React.ReactNode;
+	modal: React.ReactNode;
 }) {
-  return (
-    <>
-      <div className="flex">
-        <LeftBar />
-        <main className="mx-auto max-w-4xl w-full">
-          <Header />
-          {children}
-        </main>
-        <RightBar />
-      </div>
-      {modal}
-    </>
-  );
+	return (
+		<>
+			<div className="flex">
+				<LeftBar />
+				<main className="mx-auto max-w-4xl w-full">
+					<Header />
+					{children}
+				</main>
+				<RightBar />
+			</div>
+			{modal}
+		</>
+	);
 }
