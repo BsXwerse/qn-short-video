@@ -62,7 +62,7 @@ export default function Video({ item }: { item: VideoItem }) {
 						height={1000}
 					/>
 					<button
-						className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow z-40"
+						className="absolute-center rounded-full shadow z-40"
 						onClick={() => {
 							setShowVideo(true);
 							setShowInfo(false);
