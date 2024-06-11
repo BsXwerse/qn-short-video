@@ -114,6 +114,9 @@ importers:
       '@unocss/preset-attributify':
         specifier: ^0.60.4
         version: 0.60.4
+      '@unocss/reset':
+        specifier: ^0.60.4
+        version: 0.60.4
       autoprefixer:
         specifier: ^10
         version: 10.4.16(postcss@8.4.38)

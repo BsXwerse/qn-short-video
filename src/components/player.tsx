@@ -12,8 +12,10 @@ import useSWRInfinite from 'swr/infinite';
 
 export default function Player({
 	tag,
+	preData,
 }: {
 	tag?: string;
+	preData?: VideoItem[];
 }) {
 	const getKey = useCallback(
 		(pageIndex: number, previousPageData: VideoItem[]) => {
@@ -36,7 +38,9 @@ export default function Player({
 		[tag],
 	);
 
-	const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>);
+	const { data, setSize } = useSWRInfinite(getKey, get<VideoItem[]>, {
+		fallbackData: preData ? [preData] : undefined,
+	});
 
 	const videoList = useMemo(() => {
 		if (!data) return [];

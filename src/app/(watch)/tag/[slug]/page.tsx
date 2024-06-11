@@ -7,5 +7,6 @@ export default async function TagPlayer({
 }: {
 	params: { slug: string };
 }) {
-	return <Player tag={params.slug} />;
+	const preData = await getByTag(0, PAGE_SIZE, params.slug);
+	return <Player tag={params.slug} preData={preData} />;
 }

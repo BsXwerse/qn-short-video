@@ -2,7 +2,6 @@ import { getAll } from '@/actions/follow';
 import Modal from '@/components/modal';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
-import { SWRConfig } from 'swr';
 import FollowList from './follow-list';
 
 export default async function Follow() {

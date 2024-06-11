@@ -13,6 +13,7 @@ export default function SWRProvider({
 	return (
 		<SWRConfig
 			value={{
+				keepPreviousData: true,
 				fallback: {
 					'/api/tag': tagsData,
 				},
