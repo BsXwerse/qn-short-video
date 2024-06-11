@@ -7,7 +7,6 @@ export const metadata: Metadata = {
 	title: 'Watch',
 	description:
 		'Video playback home page, you can use the mouse wheel or up and down keys to switch videos',
-	keywords: ['static site generation, son!'],
 };
 
 export default async function Layout({
