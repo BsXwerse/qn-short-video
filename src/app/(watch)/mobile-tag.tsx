@@ -50,7 +50,7 @@ export default function MobileTag() {
 					{...attributes.popper}
 				>
 					{tags?.map((x) => (
-						<Link href={`/tag/${x.name}`} key={x.id}>
+						<Link href={`/?tag=${x.name}`} key={x.id}>
 							<div className=" px-3 py-1 inline-flex gap-2 rounded-full items-center hover:bg-foreground/10 transition-colors duration-150 ">
 								<span>{x.name}</span>
 							</div>
