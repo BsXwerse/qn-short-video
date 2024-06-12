@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import LoginBar from './loginbar';
 import MobileTag from './mobile-tag';
 import MobileNav from './moblie-nav';

@@ -112,8 +112,8 @@ export default function Video({ item }: { item: VideoItem }) {
 				})}
 				controls
 				preload="metadata"
+				src={item ? (item.url as string) : ''}
 			>
-				<source src={item ? (item.url as string) : ''} />
 				Your browser does not support the video tag.
 			</video>
 		</div>
