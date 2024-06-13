@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import useSWR from 'swr';
+import toast from 'react-hot-toast';
 import Favorite from './favorite';
 
 export default function VideoInfo({
@@ -33,10 +34,20 @@ export default function VideoInfo({
 			router.push('/api/auth/signin');
 		} else {
 			session &&
-				post('/api/user/follow', {
-					userId: session.user.id,
-					uploaderId: item?.uploderId,
-				}).then(() => mutateFollow());
+				mutateFollow(
+					async (pre) => {
+						await post('/api/user/follow', {
+							userId: session.user.id,
+							uploaderId: item?.uploderId,
+						});
+						return !pre;
+					},
+					{
+						optimisticData: (pre) => !pre,
+						rollbackOnError: true,
+						revalidate: false,
+					},
+				).catch((e) => toast.error(`操作失败: ${e?.message}`));
 		}
 	}, [item?.uploderId, mutateFollow, router, session, status]);
 
@@ -54,10 +65,20 @@ export default function VideoInfo({
 			router.push('/api/auth/signin');
 		} else {
 			session &&
-				post('/api/user/favorite', {
-					userId: session.user.id,
-					videoId: item.id,
-				}).then(() => mutateFavorite());
+				mutateFavorite(
+					async (pre) => {
+						await post('/api/user/favorite', {
+							userId: session.user.id,
+							videoId: item.id,
+						});
+						return !pre;
+					},
+					{
+						optimisticData: (pre) => !pre,
+						rollbackOnError: true,
+						revalidate: false,
+					},
+				).catch((e) => toast.error(`操作失败: ${e?.message}`));
 		}
 	}, [item.id, mutateFavorite, router, session, status]);
 
